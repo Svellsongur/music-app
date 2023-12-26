@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('artist_id');
             $table->text('song_path');
             $table->string('length');
+            $table->text('artwork_path');
+            $table->string('lyrics');
             $table->integer('user_id');
             $table->timestamps();
         });
