@@ -10,7 +10,8 @@
 
 <body>
     <span>Check file</span>
-    <form action="{{ route('check') }}" method="POST" enctype="multipart/form-data">
+    <img src="{{ asset('storage/'.auth()->user()->avatar) }}" alt="">
+    <form action="{{ route('test') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="file" name="file" id="">
         <button type="submit">Check</button>
