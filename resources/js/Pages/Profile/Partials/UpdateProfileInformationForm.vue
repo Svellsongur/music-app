@@ -3,6 +3,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import CurrentAvatar from '@/Components/CurrentAvatar.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 
 defineProps({
@@ -20,6 +21,8 @@ const form = useForm({
     name: user.name,
     email: user.email,
 });
+
+const avatar = usePage().props.auth.user_avatar;
 </script>
 
 <template>
@@ -33,6 +36,16 @@ const form = useForm({
         </header>
 
         <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
+            <div>
+                <InputLabel for="avatar" value="Avatar" />
+
+                <CurrentAvatar
+                    :currentAvatar="avatar"
+                />
+
+                <!-- <InputError class="mt-2" :message="form.errors.name" /> -->
+            </div>
+
             <div>
                 <InputLabel for="name" value="Name" />
 
