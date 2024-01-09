@@ -9,7 +9,7 @@ class PlaylistHasSong extends Model
 {
     use HasFactory;
 
-    protected $table = ['playlists_has_songs'];
+    protected $table = 'playlists_has_songs';
 
     protected $fillable = [
         'playlist_id',
