@@ -6,6 +6,17 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faMusic } from '@fortawesome/free-solid-svg-icons';
+import { faList } from '@fortawesome/free-solid-svg-icons';
+import { faRecordVinyl } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faMusic);
+library.add(faList);
+library.add(faRecordVinyl);
+library.add(faUser);
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -28,7 +39,20 @@ const showingNavigationDropdown = ref(false);
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                    <font-awesome-icon class="me-2" style="color: ;" icon="fa-solid fa-music" />
+                                    My Songs
+                                </NavLink>
+                                <NavLink :href="route('playlists')" :active="route().current('playlists')">
+                                    <font-awesome-icon class="me-2" style="color: ;" icon="fa-solid fa-list" />
+                                    My Playlists
+                                </NavLink>
+                                <NavLink :href="route('albums')" :active="route().current('albums')">
+                                    <font-awesome-icon class="me-2" style="color: ;" icon="record-vinyl" />
+                                    Albums
+                                </NavLink>
+                                <NavLink :href="route('artists')" :active="route().current('artists')">
+                                    <font-awesome-icon class="me-2" style="color: ;" icon="user" />
+                                    Artists
                                 </NavLink>
                             </div>
                         </div>

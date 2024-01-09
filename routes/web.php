@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SongController;
 use Illuminate\Foundation\Application;
@@ -33,7 +36,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/songs/playlists', [SongController::class, 'playlists'])->name('songs.playlists');
+    Route::match(['GET','POST'], '/songs/add', [SongController::class, 'store'])->name('songs.add');
+    Route::match(['GET','POST'], '/songs/update', [SongController::class, 'update'])->name('songs.add');
+    Route::delete('/songs/delete', [SongController::class, 'destroy'])->name('songs.delete');
+
+    Route::get('/playlists', [PlaylistController::class, 'index'])->name('playlists');
+
+    Route::get('/albums', [AlbumController::class, 'index'])->name('albums');
+
+    Route::get('/artists', [ArtistController::class, 'index'])->name('artists');
 });
 
 Route::match(['get', 'post'], '/test', [SongController::class, 'check'])->name('test');

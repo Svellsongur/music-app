@@ -5,6 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import CurrentAvatar from '@/Components/CurrentAvatar.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 defineProps({
     mustVerifyEmail: {
@@ -23,6 +24,8 @@ const form = useForm({
 });
 
 const avatar = usePage().props.auth.user_avatar;
+
+const fileData = ref('');
 </script>
 
 <template>
@@ -40,7 +43,7 @@ const avatar = usePage().props.auth.user_avatar;
                 <InputLabel for="avatar" value="Avatar" />
 
                 <CurrentAvatar
-                    :currentAvatar="avatar"
+                    v-model="fileData"
                 />
 
                 <!-- <InputError class="mt-2" :message="form.errors.name" /> -->
