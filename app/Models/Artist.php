@@ -9,7 +9,7 @@ class Artist extends Model
 {
     use HasFactory;
 
-    protected $table = ['artists'];
+    protected $table = 'artists';
 
     protected $fillable = [
         'name',
