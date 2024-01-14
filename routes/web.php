@@ -21,12 +21,13 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'), //Phương thức has để hiển thị nút login nếu có route này
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    // return Inertia::render('Welcome', [
+    //     'canLogin' => Route::has('login'), //Phương thức has để hiển thị nút login nếu có route này
+    //     'canRegister' => Route::has('register'),
+    //     'laravelVersion' => Application::VERSION,
+    //     'phpVersion' => PHP_VERSION,
+    // ]);
+    return redirect('/login');
 });
 
 Route::get('/songs', [SongController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
