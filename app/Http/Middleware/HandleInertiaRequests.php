@@ -33,6 +33,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
+                'logo' => asset('/storage/system/default_images/logo.jpg'),
                 'user' => $request->user(),
                 'user_avatar' => ($request->user() ? ($request->user()->avatar == null ? asset('/storage/system/default_images/default_avatar.jpg') : $request->user()->avatar) : null),
             ],
