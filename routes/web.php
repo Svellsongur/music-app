@@ -37,10 +37,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    //Songs
     Route::match(['GET','POST'], '/songs/add', [SongController::class, 'store'])->name('songs.add');
     Route::match(['GET','POST'], '/songs/update', [SongController::class, 'update'])->name('songs.add');
     Route::delete('/songs/delete', [SongController::class, 'destroy'])->name('songs.delete');
 
+    //Playlists
     Route::get('/playlists', [PlaylistController::class, 'index'])->name('playlists');
 
     Route::get('/albums', [AlbumController::class, 'index'])->name('albums');

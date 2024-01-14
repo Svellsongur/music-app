@@ -16,8 +16,8 @@ defineProps({
         type: Object,
     }
 })
-
-const songs = usePage().props.data.songs;
+const data = usePage().props.data;
+console.log(data);
 
 </script>
 
@@ -26,50 +26,51 @@ const songs = usePage().props.data.songs;
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">All songs</h2>
+            <h2 v-if="data.songs" class="font-semibold text-xl text-gray-800 leading-tight">All songs</h2>
         </template>
+        <div v-if="data.songs">
+            <div class="grid grid-cols-2 max-w-8xl">
+                <div class="pt-8 mx-10" v-for="song in data.songs">
+                    <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8">
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            <div class="p-3 text-gray-900">
+                                <div class="grid grid-cols-12">
+                                    <div class="col-span-11 items-center py-2">
+                                        <div class="text-xl overflow-hidden">{{ song.name }}</div>
+                                        <div class="text-sm">{{ song.artist }}</div>
+                                    </div>
+                                    <div class="items-center">
+                                        <Menu as="div" class="inline-block text-left">
+                                            <div>
+                                                <MenuButton
+                                                    class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                    <font-awesome-icon icon="ellipsis-vertical" />
+                                                </MenuButton>
+                                            </div>
 
-        <div class="grid grid-cols-2 max-w-8xl">
-            <div class="pt-8 mx-10" v-for="song in songs">
-                <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-3 text-gray-900">
-                            <div class="grid grid-cols-12">
-                                <div class="col-span-11 items-center py-2">
-                                    <div class="text-xl overflow-hidden">{{ song.name }}</div>
-                                    <div class="text-sm">{{ song.artist }}</div>
-                                </div>
-                                <div class="items-center">
-                                    <Menu as="div" class="inline-block text-left">
-                                        <div>
-                                            <MenuButton
-                                                class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                                <font-awesome-icon icon="ellipsis-vertical" />
-                                            </MenuButton>
-                                        </div>
-
-                                        <transition enter-active-class="transition ease-out duration-100"
-                                            enter-from-class="transform opacity-0 scale-95"
-                                            enter-to-class="transform opacity-100 scale-100"
-                                            leave-active-class="transition ease-in duration-75"
-                                            leave-from-class="transform opacity-100 scale-100"
-                                            leave-to-class="transform opacity-0 scale-95">
-                                            <MenuItems
-                                                class="absolute mt-2 w-30 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                <div class="py-1">
-                                                    <MenuItem v-slot="{ active }">
-                                                    <a href="#"
-                                                        :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Edit
+                                            <transition enter-active-class="transition ease-out duration-100"
+                                                enter-from-class="transform opacity-0 scale-95"
+                                                enter-to-class="transform opacity-100 scale-100"
+                                                leave-active-class="transition ease-in duration-75"
+                                                leave-from-class="transform opacity-100 scale-100"
+                                                leave-to-class="transform opacity-0 scale-95">
+                                                <MenuItems
+                                                    class="absolute mt-2 w-30 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                    <div class="py-1">
+                                                        <MenuItem v-slot="{ active }">
+                                                        <a href="#"
+                                                            :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Edit
                                                         </a>
-                                                    </MenuItem>
-                                                    <MenuItem v-slot="{ active }">
-                                                    <a href="#"
-                                                        :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Delete</a>
-                                                    </MenuItem>
-                                                </div>
-                                            </MenuItems>
-                                        </transition>
-                                    </Menu>
+                                                        </MenuItem>
+                                                        <MenuItem v-slot="{ active }">
+                                                        <a href="#"
+                                                            :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Delete</a>
+                                                        </MenuItem>
+                                                    </div>
+                                                </MenuItems>
+                                            </transition>
+                                        </Menu>
+                                    </div>
                                 </div>
                             </div>
                         </div>

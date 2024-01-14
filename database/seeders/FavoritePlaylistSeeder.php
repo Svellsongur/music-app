@@ -17,6 +17,7 @@ class FavoritePlaylistSeeder extends Seeder
         $favoritePlaylist = [
             'name' => 'Favorite',
             'created_at' => now(),
+            'user_id' => 1
         ];
 
         DB::table('playlists')->insert($favoritePlaylist);
