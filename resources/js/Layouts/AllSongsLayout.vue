@@ -29,11 +29,11 @@ defineProps({
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-3 text-gray-900">
                             <div class="grid grid-cols-12">
-                                <div class="col-span-11 items-center py-2">
+                                <div class="col-span-11 item-center py-2">
                                     <div class="text-xl overflow-hidden">{{ song.name }}</div>
                                     <div class="text-sm">{{ song.artist }}</div>
                                 </div>
-                                <div class="items-center">
+                                <div class="item-center px-2">
                                     <Menu as="div" class="inline-block text-left">
                                         <div>
                                             <MenuButton
