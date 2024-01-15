@@ -19,9 +19,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
+        $logo = asset('storage/system/default_images/logo.jpg');
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
+            'logo' => $logo
         ]);
     }
 

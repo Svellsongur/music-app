@@ -6,5 +6,5 @@ defineProps({
 })
 </script>
 <template>
-    <img :src="modelValue" alt="abc">
+    <img :src="modelValue" alt="Logo">
 </template>
