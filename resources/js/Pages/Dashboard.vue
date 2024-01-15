@@ -3,9 +3,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
 import AllSongsLayout from '@/Layouts/AllSongsLayout.vue';
+import PlaylistsLayout from '@/Layouts/PlaylistsLayout.vue';
 
-// import NavLink from '@/Components/NavLink.vue';
-// import MusicTabPane from '@/Components/MusicTabPane.vue';
 const data = usePage().props.data;
 
 
@@ -16,6 +15,6 @@ const data = usePage().props.data;
 
     <AuthenticatedLayout>
         <AllSongsLayout v-if="data.songs" :songs="data.songs" />
-
+        <PlaylistsLayout v-if="data.playlists" :playlists="data.playlists" />
     </AuthenticatedLayout>
 </template>
