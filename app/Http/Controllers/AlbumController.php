@@ -14,8 +14,10 @@ class AlbumController extends Controller
         $user_id = auth()->user()->id;
         $albums = DB::table('albums')
             ->leftJoin('songs', 'albums.id', '=', 'songs.album_id')
+            ->leftJoin('artists_has_songs', 'artists_has_songs.song_id', '=', 'songs.id')
+            ->leftJoin('artists', 'artists.id', '=', 'artists_has_songs.artist_id')
             ->where('songs.user_id', $user_id)
-            ->select('albums.*')
+            ->select('albums.*', 'artists.name as artist')
             ->get();
             // dd($songs);
         return Inertia::render('Dashboard', [

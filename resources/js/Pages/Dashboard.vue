@@ -2,13 +2,14 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
-import AllSongsLayout from '@/Layouts/AllSongsLayout.vue';
-import PlaylistsLayout from '@/Layouts/PlaylistsLayout.vue';
-import ArtistsLayout from '@/Layouts/ArtistsLayout.vue';
-import AlbumsLayout from '@/Layouts/AlbumsLayout.vue';
-import Modal from '@/Components/Modal.vue';
+import AllSongsLayout from '@/Pages/MainPages/AllSongsLayout.vue';
+import PlaylistsLayout from '@/Pages/MainPages/PlaylistsLayout.vue';
+import ArtistsLayout from '@/Pages/MainPages/ArtistsLayout.vue';
+import AlbumsLayout from '@/Pages/MainPages/AlbumsLayout.vue';
+
 
 const data = usePage().props.data;
+// console.log(data.songs);
 
 </script>
 

@@ -3,6 +3,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { useForm } from '@inertiajs/vue3';
 
 library.add(faEllipsisVertical);
 
@@ -23,7 +24,7 @@ defineProps({
         </div>
     </header>
     <div>
-        <div class="grid grid-cols-2 max-w-8xl">
+        <div class="grid grid-cols-2 max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="pt-8 mx-10" v-for="song in songs">
                 <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -52,8 +53,8 @@ defineProps({
                                                 class="absolute mt-2 w-30 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                 <div class="py-1">
                                                     <MenuItem v-slot="{ active }">
-                                                    <a href="#"
-                                                        :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Edit
+                                                    <a :href="route('songs.update', song.id)"
+                                                        :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Details
                                                     </a>
                                                     </MenuItem>
                                                     <MenuItem v-slot="{ active }">
