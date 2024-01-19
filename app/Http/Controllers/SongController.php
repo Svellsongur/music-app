@@ -133,4 +133,9 @@ class SongController extends Controller
     public function destroy(Request $request)
     {
     }
+
+    public function check()
+    {
+
+    }
 }
