@@ -9,7 +9,7 @@ import AlbumsLayout from '@/Pages/MainPages/AlbumsLayout.vue';
 
 
 const data = usePage().props.data;
-// console.log(data.songs);
+console.log(data.songs);
 
 </script>
 

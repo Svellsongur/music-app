@@ -21,15 +21,20 @@ class SongController extends Controller
         $user_id = auth()->user()->id;
         $songs = DB::table('songs')
             ->where('user_id', $user_id)
-            ->leftJoin('artists_has_songs', 'songs.id', '=', 'artists_has_songs.song_id')
-            ->leftJoin('artists', 'artists.id', '=', 'artists_has_songs.artist_id')
             ->leftJoin('albums', 'albums.id', '=', 'songs.album_id')
-            ->select('songs.id', 'songs.name', 'songs.length', 'songs.song_path', 'songs.artwork_path', 'artists.name as artist', 'artists.id as artist_id', 'albums.name as album')
+            ->select('songs.*', 'albums.name as album')
             ->get();
         // dd($songs);
+
         foreach ($songs as $song) {
             $song->song_path = asset($song->song_path);
+            $song->artists = DB::table('artists_has_songs')
+                ->where('song_id', $song->id)
+                ->join('artists', 'artists.id', '=', 'artists_has_songs.artist_id')
+                ->select('artists.name as artists')
+                ->get();
         }
+        // dd($songs);
         return Inertia::render('Dashboard', [
             'data' => [
                 'songs' => $songs
@@ -130,12 +135,15 @@ class SongController extends Controller
         ]);
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request, string $id)
     {
+        $user_id = auth()->user()->id;
+        Song::where('user_id', $user_id)
+            ->where('id', $id)
+            ->delete();
     }
 
     public function check()
     {
-
     }
 }

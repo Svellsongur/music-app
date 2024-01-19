@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
     //Songs
     Route::match(['GET','POST'], '/songs/add', [SongController::class, 'store'])->name('songs.add');
     Route::match(['GET','POST'], '/songs/update/{id}', [SongController::class, 'update'])->name('songs.update');
-    Route::delete('/songs/delete', [SongController::class, 'destroy'])->name('songs.delete');
+    Route::delete('/songs/delete/{id}', [SongController::class, 'destroy'])->name('songs.delete');
 
     //Playlists
     Route::get('/playlists', [PlaylistController::class, 'index'])->name('playlists');

@@ -23,7 +23,8 @@ class ArtistSeeder extends Seeder
         $artistHasSong = [
             'artist_id' => 1,
             'song_id' => 1,
-            'created_at' => now()
+            'created_at' => now(),
+            'updated_at' => now()
         ];
 
         DB::table('artists')->insert($artist);

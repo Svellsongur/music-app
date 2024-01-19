@@ -32,7 +32,7 @@ defineProps({
                             <div class="grid grid-cols-12">
                                 <div class="col-span-11 item-center py-2">
                                     <div class="text-xl overflow-hidden">{{ song.name }}</div>
-                                    <div class="text-sm">{{ song.artist }}</div>
+                                    <div class="text-sm"><span v-for="artist,index in song.artists" :key="index"><span v-if="index != 0">, </span>{{ artist.artists }}</span></div>
                                 </div>
                                 <div class="item-center px-2">
                                     <Menu as="div" class="inline-block text-left">
@@ -58,8 +58,8 @@ defineProps({
                                                     </a>
                                                     </MenuItem>
                                                     <MenuItem v-slot="{ active }">
-                                                    <a href="#"
-                                                        :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Delete</a>
+                                                    <a :href="route('songs.delete', song.id)"
+                                                        :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Move to Recycle Bin</a>
                                                     </MenuItem>
                                                 </div>
                                             </MenuItems>

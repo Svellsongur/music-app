@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('artwork_path')->nullable();
             $table->string('lyrics')->nullable();
             $table->integer('user_id');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
