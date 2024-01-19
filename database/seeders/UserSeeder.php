@@ -20,6 +20,7 @@ class UserSeeder extends Seeder
             'email' => 'secretangent2112@gmail.com',
             'password' => Hash::make('21122003'),
             'created_at' => now(),
+            'updated_at' => now(),
         ];
 
         User::insert($devUser);

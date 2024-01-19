@@ -16,7 +16,8 @@ class ArtistSeeder extends Seeder
         //
         $artist = [
             'name' => 'Yoasobi',
-            'created_at' => now()
+            'created_at' => now(),
+            'updated_at' => now()
         ];
 
         $artistHasSong = [

@@ -21,6 +21,7 @@ class SongSeeder extends Seeder
             'length' => '00:04:22',
             'user_id' => 1,
             'created_at' => now(),
+            'updated_at' => now(),
         ];
 
         DB::table('songs')->insert($song);

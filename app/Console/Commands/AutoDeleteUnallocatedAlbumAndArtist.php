@@ -30,14 +30,16 @@ class AutoDeleteUnallocatedAlbumAndArtist extends Command
         //
         $unallocatedAlbum = Album::leftJoin('songs', 'albums.id', '=', 'songs.album_id')
             ->where('songs.id', '=', null)
-            ->where('albums.updated_at', '<=', now()->subDays(30))
+            ->where('albums.updated_at', '<=', now()->subDays(3))
+            ->orWhere('albums.updated_at', '=', null)
             ->select('songs.*', 'albums.id as album_id')
             ->forceDelete();
 
         $unallocatedArtist = Artist::leftJoin('artists_has_songs', 'artists.id', '=', 'artists_has_songs.artist_id')
             ->leftJoin('songs', 'songs.id', '=', 'artists_has_songs.song_id')
             ->where('songs.id', '=', null)
-            ->where('artists.updated_at', '<=', now()->subDays(30))
+            ->where('artists.updated_at', '<=', now()->subDays(3))
+            ->orWhere('artists.updated_at', '=', null)
             ->select('songs.*', 'artists.id as artist_id')
             ->forceDelete();
     }
