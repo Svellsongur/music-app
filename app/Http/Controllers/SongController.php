@@ -7,11 +7,12 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Album;
 use App\Models\Artist;
-use App\Models\ArtistHasSong;
 use Illuminate\Http\Request;
+use App\Models\ArtistHasSong;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 
 class SongController extends Controller
 {
@@ -19,8 +20,7 @@ class SongController extends Controller
     public function index(Request $request)
     {
         $user_id = auth()->user()->id;
-        $songs = DB::table('songs')
-            ->where('user_id', $user_id)
+        $songs = Song::where('user_id', $user_id)
             ->leftJoin('albums', 'albums.id', '=', 'songs.album_id')
             ->select('songs.*', 'albums.name as album')
             ->get();
@@ -35,9 +35,12 @@ class SongController extends Controller
                 ->get();
         }
         // dd($songs);
+        $totalSongs = count($songs);
+
         return Inertia::render('Dashboard', [
             'data' => [
-                'songs' => $songs
+                'songs' => $songs,
+                'totalSongs' => $totalSongs
             ],
             'message' => 'Success',
             'status' => 200
@@ -52,8 +55,7 @@ class SongController extends Controller
     {
         $user_id = auth()->user()->id;
 
-        $song = DB::table('songs')
-            ->leftJoin('artists_has_songs', 'songs.id', '=', 'artists_has_songs.song_id')
+        $song = Song::leftJoin('artists_has_songs', 'songs.id', '=', 'artists_has_songs.song_id')
             ->leftJoin('artists', 'artists.id', '=', 'artists_has_songs.artist_id')
             ->leftJoin('albums', 'albums.id', '=', 'songs.album_id')
             ->where('user_id', $user_id)
@@ -68,8 +70,7 @@ class SongController extends Controller
         if ($request->isMethod('POST')) {
             $data = json_decode(json_encode($request->except('_token')));
 
-            $hasArtist = DB::table('songs')
-                ->leftJoin('artists_has_songs', 'songs.id', '=', 'artists_has_songs.song_id')
+            $hasArtist = Song::leftJoin('artists_has_songs', 'songs.id', '=', 'artists_has_songs.song_id')
                 ->leftJoin('artists', 'artists.id', '=', 'artists_has_songs.artist_id')
                 ->where('songs.user_id', $user_id)
                 ->where('artists.name', trim($data->artist))
@@ -78,8 +79,7 @@ class SongController extends Controller
 
             // dd($hasArtist);
 
-            $hasAlbum = DB::table('songs')
-                ->leftJoin('albums', 'songs.album_id', '=', 'albums.id')
+            $hasAlbum = Song::leftJoin('albums', 'songs.album_id', '=', 'albums.id')
                 ->where('songs.user_id', $user_id)
                 ->where('albums.name', trim($data->album))
                 ->first();
@@ -137,9 +137,7 @@ class SongController extends Controller
 
     public function destroy(Request $request, string $id)
     {
-        $user_id = auth()->user()->id;
-        Song::where('user_id', $user_id)
-            ->where('id', $id)
+        Song::where('id', $id)
             ->delete();
     }
 

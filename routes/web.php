@@ -1,13 +1,14 @@
 <?php
 
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\SongController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
-use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SongController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\PlaylistController;
+use App\Http\Controllers\RecycleBinController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,15 @@ Route::middleware('auth')->group(function () {
 
     //Artists
     Route::get('/artists', [ArtistController::class, 'index'])->name('artists');
+
+    //Recycle Bin
+    Route::get('/recycle-bin', [RecycleBinController::class, 'index'])->name('recycle-bin');
+    Route::get('/recycle-bin/detail/{id}', [RecycleBinController::class, 'detail'])->name('recycle-bin.detail');
+    Route::post('/recycle-bin/restore/{id}', [RecycleBinController::class, 'restore'])->name('recycle-bin.restore');
+    Route::post('/recycle-bin/restore-all', [RecycleBinController::class, 'restoreAll'])->name('recycle-bin.restore-all');
+    Route::delete('/recycle-bin/delete/{id}', [RecycleBinController::class, 'delete'])->name('recycle-bin.delete');
+    Route::delete('/recycle-bin/delete-all', [RecycleBinController::class, 'deleteAll'])->name('recycle-bin.delete-all');
+
 });
 
 Route::match(['get', 'post'], '/test', [SongController::class, 'check'])->name('test');

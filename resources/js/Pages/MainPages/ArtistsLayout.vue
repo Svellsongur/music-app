@@ -16,7 +16,7 @@ defineProps({
 <template>
     <header class="bg-white shadow">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Artists</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Artists</h2>
         </div>
     </header>
     <div class="grid grid-cols-2 max-w-7xl mx-auto sm:px-6 lg:px-8">

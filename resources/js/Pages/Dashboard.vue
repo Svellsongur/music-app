@@ -9,7 +9,7 @@ import AlbumsLayout from '@/Pages/MainPages/AlbumsLayout.vue';
 
 
 const data = usePage().props.data;
-console.log(data.songs);
+console.log(data.totalSongs);
 
 </script>
 
@@ -17,7 +17,7 @@ console.log(data.songs);
     <Head title="Music App" />
 
     <AuthenticatedLayout>
-        <AllSongsLayout v-if="data.songs" :songs="data.songs" />
+        <AllSongsLayout v-if="data.songs" :totalSongs="data.totalSongs" :songs="data.songs" />
         <PlaylistsLayout v-if="data.playlists" :playlists="data.playlists" />
         <ArtistsLayout v-if="data.artists" :artists="data.artists" />
         <AlbumsLayout v-if="data.albums" :albums="data.albums" />

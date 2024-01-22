@@ -3,24 +3,32 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import { useForm } from '@inertiajs/vue3';
+import { useForm,router, createInertiaApp } from '@inertiajs/vue3';
 
 library.add(faEllipsisVertical);
 
 defineProps({
     songs: {
         type: Array
+    },
+    totalSongs: {
+        type: Number
     }
 })
+
+const deleteSong = function (id) {
+    router.delete(`/songs/delete/${id}`, {
+        onBefore: () => confirm('Are you sure you want to delete this song?'),
+        onFinish: () => window.location.reload()
+    })
+}
 </script>
 
 
 <template>
     <header class="bg-white shadow">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">All songs</h2>
-
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Songs (<span v-if="totalSongs == 0">0</span> <span v-else>{{ totalSongs }}</span>)</h2>
         </div>
     </header>
     <div>
@@ -32,7 +40,10 @@ defineProps({
                             <div class="grid grid-cols-12">
                                 <div class="col-span-11 item-center py-2">
                                     <div class="text-xl overflow-hidden">{{ song.name }}</div>
-                                    <div class="text-sm"><span v-for="artist,index in song.artists" :key="index"><span v-if="index != 0">, </span>{{ artist.artists }}</span></div>
+                                    <div class="text-sm"><span v-for="artist, index in song.artists" :key="index">
+                                        <span v-if="index != 0">, </span>{{ artist.artists }}</span>
+                                            <span v-if="song.album"> - {{ song.album }}</span>
+                                            </div>
                                 </div>
                                 <div class="item-center px-2">
                                     <Menu as="div" class="inline-block text-left">
@@ -58,8 +69,9 @@ defineProps({
                                                     </a>
                                                     </MenuItem>
                                                     <MenuItem v-slot="{ active }">
-                                                    <a :href="route('songs.delete', song.id)"
-                                                        :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Move to Recycle Bin</a>
+                                                    <a @click="deleteSong(song.id)" style="cursor: pointer;"
+                                                        :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Move
+                                                        to Recycle Bin</a>
                                                     </MenuItem>
                                                 </div>
                                             </MenuItems>
