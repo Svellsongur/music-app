@@ -49,6 +49,7 @@ class SongController extends Controller
 
     public function store(Request $request)
     {
+        return Inertia::render('MainPages/AddSong');
     }
 
     public function update(Request $request, string $id)
@@ -143,5 +144,10 @@ class SongController extends Controller
 
     public function check()
     {
+    }
+
+    public function testVue()
+    {
+        return Inertia::render('Test');
     }
 }

@@ -63,5 +63,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::match(['get', 'post'], '/test', [SongController::class, 'check'])->name('test');
+Route::match(['get','post'], '/test/vue', [SongController::class, 'testVue'])->name('test-vue');
 
 require __DIR__.'/auth.php';
