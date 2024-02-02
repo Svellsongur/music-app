@@ -13,6 +13,7 @@ use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
+use Termwind\Components\Dd;
 
 class SongController extends Controller
 {
@@ -49,6 +50,19 @@ class SongController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->isMethod('POST')) {
+            foreach ($request->all() as $files) {
+                foreach ($files as $file) {
+                    $file = new GetId3($file['file']);
+                    Song::create([
+                        'name' => $file->getTitle(),
+                        'length' => $file->getPlaytime(),
+                        'user_id' => auth()->user()->id,
+                        'song_path' => 'abc',
+                    ]);
+                }
+            }
+        }
         return Inertia::render('MainPages/AddSong');
     }
 

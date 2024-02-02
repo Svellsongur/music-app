@@ -1,32 +1,37 @@
-import { ref } from 'vue'
+import { ref } from "vue";
 
 export default function () {
-	const files = ref([])
+    const files = ref([]);
 
-	function addFiles(newFiles) {
-		let newUploadableFiles = [...newFiles].map((file) => new UploadableFile(file)).filter((file) => !fileExists(file.id))
-		files.value = files.value.concat(newUploadableFiles)
-	}
+    var allowedExtensions = /(\.mp3|\.mp4|\.m4a)$/i;
 
-	function fileExists(otherId) {
-		return files.value.some(({ id }) => id === otherId)
-	}
+    function addFiles(newFiles) {
+        for (const file of newFiles) {
+            if (!allowedExtensions.exec(file.name)) {
+                alert("Audio file only!");
+                files.error = true;
+            } else {
+                let newUploadableFiles = [...newFiles]
+                    .map((file) => new UploadableFile(file))
+                    .filter((file) => !fileExists(file.id));
+                files.value = files.value.concat(newUploadableFiles);
+            }
+        }
+    }
 
-	function removeFile(file) {
-		const index = files.value.indexOf(file)
+    function fileExists(otherId) {
+        return files.value.some(({ id }) => id === otherId);
+    }
 
-		if (index > -1) files.value.splice(index, 1)
-	}
-
-	return { files, addFiles, removeFile }
+    return { files, addFiles };
 }
 
 class UploadableFile {
-	constructor(file) {
-		this.file = file
-		this.id = `${file.name}-${file.size}-${file.lastModified}-${file.type}`
-		this.url = URL.createObjectURL(file)
-		this.status = null
-        console.log(file);
-	}
+    constructor(file) {
+        this.file = file;
+        this.id = `${file.name}-${file.size}-${file.lastModified}-${file.type}`;
+        this.url = URL.createObjectURL(file);
+        this.status = null;
+        // console.log(file);
+    }
 }

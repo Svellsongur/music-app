@@ -16,7 +16,7 @@ function setActive() {
 function setInactive() {
 	inActiveTimeout = setTimeout(() => {
 		active.value = false
-	}, 50)
+	}, 50000)
 }
 
 function onDrop(e) {
