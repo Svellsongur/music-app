@@ -8,10 +8,8 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faMusic } from '@fortawesome/free-solid-svg-icons';
-import { faList } from '@fortawesome/free-solid-svg-icons';
-import { faRecordVinyl } from '@fortawesome/free-solid-svg-icons';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faMusic, faList, faRecordVinyl, faUser } from '@fortawesome/free-solid-svg-icons';
+import { usePage } from '@inertiajs/vue3';
 
 library.add(faMusic);
 library.add(faList);
@@ -19,6 +17,8 @@ library.add(faRecordVinyl);
 library.add(faUser);
 
 const showingNavigationDropdown = ref(false);
+
+const logo = usePage().props.auth.logo;
 </script>
 
 <template>
@@ -32,7 +32,7 @@ const showingNavigationDropdown = ref(false);
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
-                                <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800" />
+                                <ApplicationLogo v-model="logo" class="block h-9 w-auto fill-current text-gray-800" />
                                 </Link>
                             </div>
 
@@ -79,6 +79,7 @@ const showingNavigationDropdown = ref(false);
 
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
+                                        <DropdownLink :href="route('recycle-bin')"> Recycle Bin </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Log Out
                                         </DropdownLink>
@@ -127,6 +128,7 @@ const showingNavigationDropdown = ref(false);
 
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('recycle-bin')"> Recycle Bin </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
                                 Log Out
                             </ResponsiveNavLink>

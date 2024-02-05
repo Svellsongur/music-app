@@ -21,7 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FavoritePlaylistSeeder::class,
             UserSeeder::class,
-            UserHasPlaylistSeeder::class,
             SongSeeder::class,
             AlbumSeeder::class,
             ArtistSeeder::class

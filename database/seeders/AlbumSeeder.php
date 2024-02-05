@@ -16,7 +16,8 @@ class AlbumSeeder extends Seeder
         //
         $album = [
             'name' => 'The Book',
-            'created_at' => now()
+            'created_at' => now(),
+            'updated_at' => now()
         ];
 
         DB::table('albums')->insert($album);

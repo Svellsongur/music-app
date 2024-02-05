@@ -1,33 +1,25 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import NavLink from '@/Components/NavLink.vue';
-import MusicTabPane from '@/Components/MusicTabPane.vue';
+import { usePage } from '@inertiajs/vue3';
+import AllSongsLayout from '@/Pages/MainPages/AllSongsLayout.vue';
+import PlaylistsLayout from '@/Pages/MainPages/PlaylistsLayout.vue';
+import ArtistsLayout from '@/Pages/MainPages/ArtistsLayout.vue';
+import AlbumsLayout from '@/Pages/MainPages/AlbumsLayout.vue';
+
+
+const data = usePage().props.data;
+console.log(data.totalSongs);
+
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Music App" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <!-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                            <MusicTabPane :href="route('dashboard')" :active="route().current('dashboard')">
-                                Dashboard
-                            </MusicTabPane>
-                            <MusicTabPane :href="route('playlists')" :active="route().current('playlists')">
-                                Playlists
-                            </MusicTabPane>
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-        </div>
+        <AllSongsLayout v-if="data.songs" :totalSongs="data.totalSongs" :songs="data.songs" />
+        <PlaylistsLayout v-if="data.playlists" :playlists="data.playlists" />
+        <ArtistsLayout v-if="data.artists" :artists="data.artists" />
+        <AlbumsLayout v-if="data.albums" :albums="data.albums" />
     </AuthenticatedLayout>
 </template>
