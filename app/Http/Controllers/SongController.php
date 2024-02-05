@@ -13,7 +13,6 @@ use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
-use Termwind\Components\Dd;
 
 class SongController extends Controller
 {
@@ -53,13 +52,63 @@ class SongController extends Controller
         if ($request->isMethod('POST')) {
             foreach ($request->all() as $files) {
                 foreach ($files as $file) {
+                    $originalFile = $file['file'];
                     $file = new GetId3($file['file']);
-                    Song::create([
+                    $url = uploadfile('/user/' . auth()->user()->id . '/songs', $originalFile);
+
+                    $song = Song::create([
                         'name' => $file->getTitle(),
                         'length' => $file->getPlaytime(),
                         'user_id' => auth()->user()->id,
-                        'song_path' => 'abc',
+                        'song_path' => $url,
                     ]);
+
+                    //check artist
+                    $hasArtist = Song::leftJoin('artists_has_songs', 'songs.id', '=', 'artists_has_songs.song_id')
+                        ->leftJoin('artists', 'artists.id', '=', 'artists_has_songs.artist_id')
+                        ->where('songs.user_id', auth()->user()->id)
+                        ->where('artists.name', trim($file->getArtist()))
+                        ->select('artists.id as artist_id')
+                        ->first();
+
+                    // dd($hasArtist);
+                    //check album
+                    $hasAlbum = Song::leftJoin('albums', 'songs.album_id', '=', 'albums.id')
+                        ->where('songs.user_id', auth()->user()->id)
+                        ->where('albums.name', trim($file->getAlbum()))
+                        ->first();
+
+                    //update artist if db already has one
+                    if ($hasArtist == null) {
+                        $newArtist = Artist::create([
+                            'name' => trim($file->getArtist()),
+                        ]);
+                        ArtistHasSong::create([
+                            'artist_id' => $newArtist->id,
+                            'song_id' => $song->id
+                        ]);
+                    } else {
+                        ArtistHasSong::create([
+                            'artist_id' => $hasArtist->artist_id,
+                            'song_id' => $song->id
+                        ]);
+                    }
+
+                    //update album
+                    if ($file->getAlbum() != null) {
+                        if ($hasAlbum == null) {
+                            $newAlbum = Album::create([
+                                'name' => trim($file->getAlbum()),
+                            ]);
+                            $newSong = Song::find($song->id);
+                            $newSong->album_id = $newAlbum->id;
+                            $newSong->save();
+                        } else {
+                            $newSong = Song::find($song->id);
+                            $newSong->album_id = $hasAlbum->id;
+                            $newSong->save();
+                        }
+                    }
                 }
             }
         }
@@ -100,7 +149,7 @@ class SongController extends Controller
                 ->first();
 
 
-            //fix thành công bug thêm nhiều artist has song record
+            //fixed bug thêm nhiều artist has song record
             if ($hasArtist == null) {
                 $newArtist = Artist::create([
                     'name' => trim($data->artist),
