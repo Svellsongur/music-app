@@ -17,6 +17,7 @@ class ArtistController extends Controller
             ->leftJoin('songs', 'songs.id', '=', 'artists_has_songs.song_id')
             ->where('songs.user_id', $user_id)
             ->select('artists.*')
+            ->groupBy('artists.name')
             ->get();
             // dd($songs);
         return Inertia::render('Dashboard', [
