@@ -3,11 +3,14 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import { useForm,router, createInertiaApp } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { inject } from 'vue';
+
 
 library.add(faEllipsisVertical);
 
-defineProps({
+const props = defineProps({
     songs: {
         type: Array
     },
@@ -16,11 +19,34 @@ defineProps({
     }
 })
 
+const emit = defineEmits(['playSong']);
+
 const deleteSong = function (id) {
     router.delete(`/songs/delete/${id}`, {
         onBefore: () => confirm('Are you sure you want to delete this song?'),
         onFinish: () => window.location.reload()
     })
+}
+
+const addSong = function () {
+    router.get('/songs/add')
+}
+
+const playSong = function (song) {
+    if (typeof song.song_path != undefined) {
+        if (localStorage.getItem('currentPlaylist') != null && localStorage.getItem('currentSong') != null) {
+            localStorage.removeItem('currentSong');
+            localStorage.removeItem('currentPlaylist');
+        }
+
+        localStorage.setItem('currentSong', JSON.stringify(song));
+        localStorage.setItem('currentPlaylist', JSON.stringify(props.songs));
+
+        document.querySelector('#audio').src = song.song_path;
+        document.querySelector('#audio').play();
+        document.querySelector('#songName').innerHTML = song.name;
+        emit('playSong');
+    }
 }
 </script>
 
@@ -28,22 +54,30 @@ const deleteSong = function (id) {
 <template>
     <header class="bg-white shadow">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Songs (<span v-if="totalSongs == 0">0</span> <span v-else>{{ totalSongs }}</span>)</h2>
+            <div class="grid grid-cols-13">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Songs (<span
+                        v-if="totalSongs == 0">0</span>
+                    <span v-else>{{ totalSongs }}</span>)
+                </h2>
+                <div class="col-end-16 col-start-13">
+                    <PrimaryButton @click="addSong()" style="margin-right: 0 !important;">Add Songs</PrimaryButton>
+                </div>
+            </div>
         </div>
     </header>
     <div>
         <div class="grid grid-cols-2 max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="pt-8 mx-10" v-for="song in songs">
+            <div class="pt-8 mx-10" v-for="(song, index) in songs" :key="index">
                 <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-3 text-gray-900">
+                        <button type="button" @click="playSong(song)" class="p-3 text-gray-900 text-left">
                             <div class="grid grid-cols-12">
                                 <div class="col-span-11 item-center py-2">
                                     <div class="text-xl overflow-hidden">{{ song.name }}</div>
                                     <div class="text-sm"><span v-for="artist, index in song.artists" :key="index">
-                                        <span v-if="index != 0">, </span>{{ artist.artists }}</span>
-                                            <span v-if="song.album"> - {{ song.album }}</span>
-                                            </div>
+                                            <span v-if="index != 0">, </span>{{ artist.artists }}</span>
+                                        <span v-if="song.album"> - {{ song.album }}</span>
+                                    </div>
                                 </div>
                                 <div class="item-center px-2">
                                     <Menu as="div" class="inline-block text-left">
@@ -79,7 +113,7 @@ const deleteSong = function (id) {
                                     </Menu>
                                 </div>
                             </div>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>

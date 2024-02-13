@@ -1,7 +1,7 @@
 <script setup>
-import { onUnmounted, ref } from 'vue';
+import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { router, useForm } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DropZone from '@/Components/DropZone.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -9,7 +9,6 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
 import FilePreview from '@/components/FilePreview.vue';
 import useFileList from '@/compositions/list-file.js';
-import createUploader from '@/compositions/file-uploader.js';
 
 const { files, addFiles } = useFileList()
 
@@ -34,8 +33,8 @@ function removeFile(file) {
 }
 
 // console.log(files.value);
-console.log(files);
-console.log(form.files);
+// console.log(files);
+// console.log(form.files);
 
 library.add(faFileArrowDown);
 

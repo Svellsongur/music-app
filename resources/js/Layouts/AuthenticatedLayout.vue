@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMusic, faList, faRecordVinyl, faUser } from '@fortawesome/free-solid-svg-icons';
 import { usePage } from '@inertiajs/vue3';
 
+//import icon
 library.add(faMusic);
 library.add(faList);
 library.add(faRecordVinyl);
@@ -18,11 +19,13 @@ library.add(faUser);
 
 const showingNavigationDropdown = ref(false);
 
+//logo
 const logo = usePage().props.auth.logo;
+
 </script>
 
 <template>
-    <div>
+    <div class="static">
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->

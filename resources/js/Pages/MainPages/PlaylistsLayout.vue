@@ -3,6 +3,8 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faChevronRight, faPlus } from '@fortawesome/free-solid-svg-icons';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { router } from '@inertiajs/vue3';
 
 library.add(faChevronRight, faPlus);
 
@@ -11,13 +13,22 @@ defineProps({
         type: Array
     }
 })
+
+const addSong = function () {
+    router.get('/songs/add')
+}
 </script>
 
 
 <template>
     <header class="bg-white shadow">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Playlists</h2>
+            <div class="grid grid-cols-13">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Playlists</h2>
+                <div class="col-end-16 col-start-13">
+                    <PrimaryButton @click="addSong()" style="margin-right: 0 !important;">Add Songs</PrimaryButton>
+                </div>
+            </div>
         </div>
     </header>
     <div class="grid grid-cols-2 max-w-7xl mx-auto sm:px-6 lg:px-8">

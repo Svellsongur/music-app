@@ -60,7 +60,7 @@ class SongController extends Controller
                         'name' => $file->getTitle(),
                         'length' => $file->getPlaytime(),
                         'user_id' => auth()->user()->id,
-                        'song_path' => $url,
+                        'song_path' => 'storage/' . $url,
                     ]);
 
                     //check artist
