@@ -23,7 +23,9 @@ class SongController extends Controller
         $songs = Song::where('user_id', $user_id)
             ->leftJoin('albums', 'albums.id', '=', 'songs.album_id')
             ->select('songs.*', 'albums.name as album')
+            ->orderBy('songs.name', 'asc')
             ->get();
+
         // dd($songs);
 
         foreach ($songs as $song) {

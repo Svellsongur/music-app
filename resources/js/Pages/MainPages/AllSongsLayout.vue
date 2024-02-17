@@ -6,7 +6,7 @@ import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { router } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { inject } from 'vue';
-
+import { eventBus } from '@/eventBus.js';
 
 library.add(faEllipsisVertical);
 
@@ -19,7 +19,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['playSong']);
+// const emit = defineEmits(['playSong']);
 
 const deleteSong = function (id) {
     router.delete(`/songs/delete/${id}`, {
@@ -32,20 +32,16 @@ const addSong = function () {
     router.get('/songs/add')
 }
 
-const playSong = function (song) {
+const playSong = function (song, index) {
     if (typeof song.song_path != undefined) {
         if (localStorage.getItem('currentPlaylist') != null && localStorage.getItem('currentSong') != null) {
-            localStorage.removeItem('currentSong');
             localStorage.removeItem('currentPlaylist');
         }
 
-        localStorage.setItem('currentSong', JSON.stringify(song));
+        localStorage.setItem('index', index);
         localStorage.setItem('currentPlaylist', JSON.stringify(props.songs));
-
-        document.querySelector('#audio').src = song.song_path;
-        document.querySelector('#audio').play();
-        document.querySelector('#songName').innerHTML = song.name;
-        emit('playSong');
+        eventBus.emit('playSong', index);
+        // document.getElementById('audio').play();
     }
 }
 </script>
@@ -70,7 +66,7 @@ const playSong = function (song) {
             <div class="pt-8 mx-10" v-for="(song, index) in songs" :key="index">
                 <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <button type="button" @click="playSong(song)" class="p-3 text-gray-900 text-left">
+                        <button type="button" @click="playSong(song, index)" class="p-3 text-gray-900 text-left">
                             <div class="grid grid-cols-12">
                                 <div class="col-span-11 item-center py-2">
                                     <div class="text-xl overflow-hidden">{{ song.name }}</div>

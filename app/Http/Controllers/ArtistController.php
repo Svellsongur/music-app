@@ -18,6 +18,7 @@ class ArtistController extends Controller
             ->where('songs.user_id', $user_id)
             ->select('artists.*')
             ->groupBy('artists.name')
+            ->orderBy('artists.name', 'asc')
             ->get();
             // dd($songs);
         return Inertia::render('Dashboard', [

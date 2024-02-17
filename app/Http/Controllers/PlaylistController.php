@@ -15,6 +15,7 @@ class PlaylistController extends Controller
         $playlists = DB::table('playlists')
             ->where('user_id', $user_id)
             ->select('playlists.*')
+            ->orderBy('playlists.name', 'asc')
             ->get();
         // dd($songs);
         return Inertia::render('Dashboard', [
