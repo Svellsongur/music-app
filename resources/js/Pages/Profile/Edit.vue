@@ -1,4 +1,5 @@
 <script setup>
+import AudioComponent from '@/Components/AudioComponent.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
@@ -13,6 +14,10 @@ defineProps({
         type: String,
     },
 });
+
+defineOptions({
+    layout: AudioComponent
+})
 </script>
 
 <template>

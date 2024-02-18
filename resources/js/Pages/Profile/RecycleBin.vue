@@ -1,9 +1,10 @@
 <script setup>
+import AudioComponent from '@/Components/AudioComponent.vue';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisVertical, faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { useForm, router, createInertiaApp } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { format } from 'date-fns';
@@ -18,6 +19,10 @@ defineProps({
     totalDeletedSongs: {
         type: Number
     }
+})
+
+defineOptions({
+    layout: AudioComponent
 })
 
 const restoreSong = function (id) {

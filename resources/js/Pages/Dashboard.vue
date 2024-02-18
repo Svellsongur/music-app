@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlay, faPause, faForwardFast, faBackwardFast } from '@fortawesome/free-solid-svg-icons';
 
-
 defineOptions({
     layout: AudioComponent
 })
@@ -26,7 +25,7 @@ const data = usePage().props.data;
     <Head title="Music App" />
 
     <AuthenticatedLayout>
-        <AllSongsLayout v-if="data.songs" :totalSongs="data.totalSongs" :songs="data.songs" />
+        <AllSongsLayout v-if="data.songs" :data="data"/>
         <PlaylistsLayout v-if="data.playlists" :playlists="data.playlists" />
         <ArtistsLayout v-if="data.artists" :artists="data.artists" />
         <AlbumsLayout v-if="data.albums" :albums="data.albums" />

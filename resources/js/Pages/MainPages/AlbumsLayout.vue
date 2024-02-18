@@ -16,6 +16,10 @@ defineProps({
 const addSong = function () {
     router.get('/songs/add')
 }
+
+const albumSongs = function (id) {
+    router.get(`/albums/detail/${id}`)
+}
 </script>
 
 
@@ -32,7 +36,7 @@ const addSong = function () {
     </header>
     <div class="grid grid-cols-2 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="pt-8 mx-10" v-for="album in albums">
-            <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8 ">
+            <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8 " @click="albumSongs(album.id)">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg hover:bg-gray-50">
                     <button class="p-3 text-gray-900 text-left">
                         <div class="grid grid-cols-12">

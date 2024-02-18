@@ -48,9 +48,11 @@ Route::middleware('auth')->group(function () {
 
     //Albums
     Route::get('/albums', [AlbumController::class, 'index'])->name('albums');
+    Route::get('/albums/detail/{id}', [AlbumController::class, 'detail'])->name('albums.detail');
 
     //Artists
     Route::get('/artists', [ArtistController::class, 'index'])->name('artists');
+    Route::get('/artists/detail/{id}', [ArtistController::class, 'detail'])->name('artists.detail');
 
     //Recycle Bin
     Route::get('/recycle-bin', [RecycleBinController::class, 'index'])->name('recycle-bin');

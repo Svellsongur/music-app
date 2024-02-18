@@ -42,7 +42,9 @@ class SongController extends Controller
         return Inertia::render('Dashboard', [
             'data' => [
                 'songs' => $songs,
-                'totalSongs' => $totalSongs
+                'totalSongs' => $totalSongs,
+                'backButton' => false,
+                'title' => 'My Songs',
             ],
             'message' => 'Success',
             'status' => 200

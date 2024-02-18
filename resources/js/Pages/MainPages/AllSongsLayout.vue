@@ -11,19 +11,19 @@ import { eventBus } from '@/eventBus.js';
 library.add(faEllipsisVertical);
 
 const props = defineProps({
-    songs: {
-        type: Array
-    },
-    totalSongs: {
-        type: Number
+    data: {
+        type: Object
     }
 })
 
-// const emit = defineEmits(['playSong']);
+let songs = props.data.songs;
+let totalSongs = props.data.totalSongs;
+let backButton = props.data.backButton;
+let title = props.data.title;
 
 const deleteSong = function (id) {
     router.delete(`/songs/delete/${id}`, {
-        onBefore: () => confirm('Are you sure you want to delete this song?'),
+        onBefore: () => confirm('Are you sure you want to move this song to recycle bin? You can restore it later'),
         onFinish: () => window.location.reload()
     })
 }
@@ -34,16 +34,16 @@ const addSong = function () {
 
 const playSong = function (song, index) {
     if (typeof song.song_path != undefined) {
-        if (localStorage.getItem('currentPlaylist') != null && localStorage.getItem('currentSong') != null) {
+        if (localStorage.getItem('currentPlaylist') != null) {
             localStorage.removeItem('currentPlaylist');
         }
 
         localStorage.setItem('index', index);
-        localStorage.setItem('currentPlaylist', JSON.stringify(props.songs));
+        localStorage.setItem('currentPlaylist', JSON.stringify(props.data.songs));
         eventBus.emit('playSong', index);
-        // document.getElementById('audio').play();
     }
 }
+
 </script>
 
 
@@ -51,7 +51,7 @@ const playSong = function (song, index) {
     <header class="bg-white shadow">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-13">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Songs (<span
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ title }} (<span
                         v-if="totalSongs == 0">0</span>
                     <span v-else>{{ totalSongs }}</span>)
                 </h2>
@@ -75,7 +75,7 @@ const playSong = function (song, index) {
                                         <span v-if="song.album"> - {{ song.album }}</span>
                                     </div>
                                 </div>
-                                <div class="item-center px-2">
+                                <div class="item-center px-2" @click.stop id="dropdownButton">
                                     <Menu as="div" class="inline-block text-left">
                                         <div>
                                             <MenuButton
