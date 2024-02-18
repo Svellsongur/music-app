@@ -33,8 +33,8 @@ let currentTimeText = ref('00:00');
 let cancelFunction = ref(false);
 let display = ref(false);
 let isShuffled = ref(false);
+let songShuffled = ref(false);
 let isLooped = ref(false);
-let shuffledPlaylist = ref([]);
 
 //audio control functions
 const play = function () {
@@ -49,9 +49,20 @@ const pause = function () {
 }
 
 const prev = function () {
+    let currentSong = currentPlaylist.value[songIndex.value];
+    if (isShuffled.value == true && songShuffled.value == false) {
+        shuffle(currentPlaylist.value);
+        songShuffled.value = true;
+    } if (isShuffled.value == false && songShuffled.value == true) {
+        currentPlaylist.value.sort();
+        songShuffled.value = false;
+    }
     songIndex.value--;
     if (songIndex.value < 0) {
         songIndex.value = currentPlaylist.value.length - 1;
+    }
+    if (currentSong.id == currentPlaylist.value[songIndex.value].id) {
+        prev();
     }
     audio.value.oncanplaythrough = () => {
         audio.value.play();
@@ -60,14 +71,29 @@ const prev = function () {
 }
 
 const next = function () {
+    let currentSong = currentPlaylist.value[songIndex.value];
+    if (isShuffled.value == true && songShuffled.value == false) {
+        shuffle(currentPlaylist.value);
+        songShuffled.value = true;
+    }
+    if (isShuffled.value == false && songShuffled.value == true) {
+        currentPlaylist.value.sort();
+        songShuffled.value = false;
+        // console.log(currentPlaylist.value);
+    }
     songIndex.value++;
     if (songIndex.value >= currentPlaylist.value.length) {
         songIndex.value = 0;
+    }
+    if (currentSong.id == currentPlaylist.value[songIndex.value].id) {
+        next();
     }
     audio.value.oncanplaythrough = () => {
         audio.value.play();
     }
     localStorage.setItem('index', songIndex.value);
+    console.log('isShuffled:' + isShuffled.value);
+    console.log('songShuffled:' + songShuffled.value);
 }
 
 const onPlay = function () {
@@ -144,25 +170,18 @@ const shuffle = function (array) {
     return array;
 }
 
-const compare = function (a, b) {
-    if (a.name.toUpperCase() < b.name.toUpperCase()) {
-        return -1;
-    }
-    if (a.name.toUpperCase() > b.name.toUpperCase()) {
-        return 1;
-    }
-    return 0;
-}
-
 //shuffle music
 const shuffleMusic = function () {
     if (isShuffled.value == false) {
         isShuffled.value = true;
-        shuffledPlaylist.value = [...currentPlaylist.value]; // Create a copy
-        shuffle(shuffledPlaylist.value); // Shuffle the copy
+        songShuffled.value = false;
+        console.log('isShuffled:' + isShuffled.value);
+        console.log('songShuffled:' + songShuffled.value);
     } else {
         isShuffled.value = false;
-        // No need to update the shuffled playlist since we're back to the original order
+        songShuffled.value = true;
+        console.log('isShuffled:' + isShuffled.value);
+        console.log('songShuffled:' + songShuffled.value);
     }
 }
 

@@ -45,5 +45,8 @@ artist has song bug
 * task completed: 
 - move to recycle bin alert
 - repeat function
+- shuffle function
 
-* current problems: audio source change when shuffle
+* current problems: 
+- upload song neither show alert nor redirect
+- time in song detail not formatted
