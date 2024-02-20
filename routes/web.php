@@ -45,6 +45,8 @@ Route::middleware('auth')->group(function () {
 
     //Playlists
     Route::get('/playlists', [PlaylistController::class, 'index'])->name('playlists');
+    Route::get('/playlists/detail/{id}', [PlaylistController::class, 'detail'])->name('playlists.detail');
+    Route::post('/playlists/add', [PlaylistController::class, 'store'])->name('playlist.add');
 
     //Albums
     Route::get('/albums', [AlbumController::class, 'index'])->name('albums');

@@ -34,7 +34,7 @@ artist has song bug
 - move to recycle bin alert, album and artist related when delete
 
 18/2/2024 - what remained:
-- delete function: havent delete in storage, conflict with audio function, soft dlt alert, solve related info when delete, move to recycle bin alert
+- delete function: havent delete in storage, conflict with audio function, soft dlt alert, solve related info when delete
 - css: add song page, add back buttons, truncate text, fix marquee css, range input
 - image function: change user avatar, song's artwork, gallery
 - account: create new folder for user 
@@ -50,3 +50,20 @@ artist has song bug
 * current problems: 
 - upload song neither show alert nor redirect
 - time in song detail not formatted
+
+19/2/2024:
+* current problems: 
+- change the alert into new alert when optimize (make new alert cause today's alert bugged out)
+- what happened when upload a file twice
+
+* what i did:
+- create new folder for new registered user
+
+20/2/2024:
+- delete function: havent delete in storage, conflict with audio function, solve related info when delete
+- css: add song page, add back buttons, truncate text, fix marquee css, range input
+- image function: change user avatar, song's artwork, gallery
+- activity log function
+- playlist functions
+- change the alert into new alert when optimize (make new alert cause today's alert bugged out)
+- what happened when upload a file twice

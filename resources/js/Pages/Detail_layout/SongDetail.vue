@@ -7,6 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { format } from 'date-fns';
 
 const song = usePage().props.data.song;
 
@@ -26,7 +27,7 @@ const title = song.name + " detail";
 
 const songAnotherInfo = {
     'length': 'Length: ' + song.length,
-    'uploaded_at': 'Uploaded at: ' + song.created_at
+    'uploaded_at': 'Uploaded at: ' + format(song.created_at, "dd/MM/yyyy HH:mm:ss")
 
 };
 </script>

@@ -21,7 +21,7 @@ function onInputChange(e) {
     form.files = files
 }
 
-function dropFiles(e){
+function dropFiles(e) {
     addFiles(e)
     form.files = files
 }
@@ -39,9 +39,12 @@ function removeFile(file) {
 library.add(faFileArrowDown);
 
 const uploadSong = function () {
-    form.post('/songs/add', {
-
-    })
+    // if (form.files.value) {
+        form.post('/songs/add', {
+            onBefore: () => alert('Songs uploaded successfully!'),
+            onSuccess: () => window.location.reload()
+        })
+    // }
 }
 
 </script>

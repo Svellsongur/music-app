@@ -58,6 +58,9 @@ class SongController extends Controller
                 foreach ($files as $file) {
                     $originalFile = $file['file'];
                     $file = new GetId3($file['file']);
+
+                    // dd($file->extractInfo());
+
                     $url = uploadfile('/user/' . auth()->user()->id . '/songs', $originalFile);
 
                     $song = Song::create([

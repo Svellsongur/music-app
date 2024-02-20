@@ -5,8 +5,13 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { router } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { inject } from 'vue';
 import { eventBus } from '@/eventBus.js';
+import Modal from '@/Components/Modal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/Components/InputError.vue';
+import { ref } from 'vue';
 
 library.add(faEllipsisVertical);
 
@@ -44,6 +49,15 @@ const playSong = function (song, index) {
     }
 }
 
+//modal functions
+let openModal = ref(false);
+const closeModal = function () {
+    openModal.value = false;
+}
+
+const addSongToPlaylist = function (id) {
+    openModal.value = true;
+}
 </script>
 
 
@@ -103,10 +117,43 @@ const playSong = function (song, index) {
                                                         :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Move
                                                         to Recycle Bin</a>
                                                     </MenuItem>
+                                                    <MenuItem v-slot="{ active }">
+                                                    <a @click="addSongToPlaylist(song.id)" style="cursor: pointer;"
+                                                        :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Add this song to playlist</a>
+                                                    </MenuItem>
                                                 </div>
                                             </MenuItems>
                                         </transition>
                                     </Menu>
+
+                                    <Modal class="z-10" :show="openModal" @close="closeModal">
+                                        <div class="p-6">
+                                            <h2 class="text-lg font-medium text-gray-900">
+                                                Are you sure you want to delete your account?
+                                            </h2>
+
+                                            <p class="mt-1 text-sm text-gray-600">
+                                                Once your account is deleted, all of its resources and data will be
+                                                permanently deleted. Please
+                                                enter your password to confirm you would like to permanently delete your
+                                                account.
+                                            </p>
+
+                                            <!-- <div class="mt-6">
+                                                <InputLabel for="password" value="Password" class="sr-only" />
+
+                                                <TextInput id="password" ref="passwordInput" v-model="form.password"
+                                                    type="password" class="mt-1 block w-3/4" placeholder="Password"
+                                                    @keyup.enter="deleteUser" />
+
+                                                <InputError :message="form.errors.password" class="mt-2" />
+                                            </div> -->
+
+                                            <div class="mt-6 flex justify-end">
+                                                <SecondaryButton @click="closeModal()"> close </SecondaryButton>
+                                            </div>
+                                        </div>
+                                    </Modal>
                                 </div>
                             </div>
                         </button>

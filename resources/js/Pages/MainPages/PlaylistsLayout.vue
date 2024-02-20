@@ -4,7 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faChevronRight, faPlus } from '@fortawesome/free-solid-svg-icons';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { router } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
+import Modal from '@/Components/Modal.vue';
+import { ref } from 'vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputLabel from '@/Components/InputLabel.vue';
 
 library.add(faChevronRight, faPlus);
 
@@ -14,8 +19,36 @@ defineProps({
     }
 })
 
+const openModal = ref(false);
+const nameInput = ref(null);
+
+const form = useForm({
+    name: '',
+});
+
+
 const addSong = function () {
     router.get('/songs/add')
+}
+
+//playlist
+const openPlaylistModal = function () {
+    openModal.value = true;
+    nextTick(() => nameInput.value.focus());
+}
+
+const closeModal = function () {
+    openModal.value = false;
+    form.reset();
+}
+
+const addPlaylist = function () {
+    form.post('/playlists/add', {
+        onFinish: () => {
+            closeModal();
+            router.get('/playlists');
+        }
+    })
 }
 </script>
 
@@ -48,7 +81,7 @@ const addSong = function () {
                 </div>
             </div>
         </div>
-        <div class="pt-8 mx-10">
+        <div class="pt-8 mx-10" @click="openPlaylistModal()">
             <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8 ">
                 <button class="w-full py-2 bg-white overflow-hidden shadow-sm sm:rounded-lg hover:bg-gray-50 text-center">
                     <div class="p-3 text-gray-900">
@@ -57,5 +90,29 @@ const addSong = function () {
                 </button>
             </div>
         </div>
+        <Modal :show="openModal" @close="closeModal()">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Add new playlist
+                </h2>
+
+                <div class="mt-6">
+                    <InputLabel for="name" value="Name" class="sr-only" />
+
+                    <TextInput id="name" ref="nameInput" v-model="form.name" type="text" class="mt-1 block w-3/4"
+                        placeholder="Enter new playlist's name" @keyup.enter="addPlaylist()" />
+
+                    <!-- <InputError :message="form.errors.password" class="mt-2" /> -->
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <PrimaryButton class="ms-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
+                        @click="addPlaylist()">
+                        Add new playlist
+                    </PrimaryButton>
+                    <SecondaryButton @click="closeModal()"> Cancel </SecondaryButton>
+                </div>
+            </div>
+        </Modal>
     </div>
 </template>
