@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Song;
 use Inertia\Middleware;
+use App\Models\Playlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -33,7 +34,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         if ($request->user()) {
-
+            $playlists = Playlist::where('user_id', $request->user()->id)->get();
 
             $songs = Song::where('user_id', $request->user()->id)
                 ->leftJoin('albums', 'albums.id', '=', 'songs.album_id')
@@ -57,6 +58,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'user_avatar' => ($request->user() ? ($request->user()->avatar == null ? asset('/storage/system/default_images/default_avatar.jpg') : $request->user()->avatar) : null),
                 'allSongs' => $request->user() ? $songs : null,
+                'playlists' => $request->user() ? $playlists : null
             ],
         ];
     }

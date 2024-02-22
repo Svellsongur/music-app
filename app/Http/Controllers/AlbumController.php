@@ -59,7 +59,7 @@ class AlbumController extends Controller
             'data' => [
                 'songs' => $songs,
                 'totalSongs' => $totalSongs,
-                'backButton' => true,
+                'layoutType' => 2,
                 'title' => 'Album ' . $album->name,
             ],
             'message' => 'Success',

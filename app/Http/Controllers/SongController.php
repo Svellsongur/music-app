@@ -43,7 +43,7 @@ class SongController extends Controller
             'data' => [
                 'songs' => $songs,
                 'totalSongs' => $totalSongs,
-                'backButton' => false,
+                'layoutType' => 1,
                 'title' => 'My Songs',
             ],
             'message' => 'Success',

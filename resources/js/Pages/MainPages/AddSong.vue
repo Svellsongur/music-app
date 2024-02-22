@@ -6,7 +6,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DropZone from '@/Components/DropZone.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faFileArrowDown, faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import FilePreview from '@/components/FilePreview.vue';
 import useFileList from '@/compositions/list-file.js';
 
@@ -36,15 +36,19 @@ function removeFile(file) {
 // console.log(files);
 // console.log(form.files);
 
-library.add(faFileArrowDown);
+library.add(faFileArrowDown, faCircleArrowLeft);
 
 const uploadSong = function () {
     // if (form.files.value) {
-        form.post('/songs/add', {
-            onBefore: () => alert('Songs uploaded successfully!'),
-            onSuccess: () => window.location.reload()
-        })
+    form.post('/songs/add', {
+        onBefore: () => alert('Songs uploaded successfully!'),
+        onSuccess: () => window.location.reload()
+    })
     // }
+}
+
+const back = function () {
+    window.history.back();
 }
 
 </script>
@@ -53,7 +57,12 @@ const uploadSong = function () {
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Upload New Songs</h2>
         </template>
-
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-3">
+            <button @click="back()">
+                <font-awesome-icon class="mx-auto mt-3" icon="fa-solid fa-circle-arrow-left" size="xl"
+                    style="cursor:pointer" />
+            </button>
+        </div>
         <div class="pt-8 max-w-6xl mx-auto mb-10">
             <form @submit.prevent="uploadSong" enctype="multipart/form-data">
                 <DropZone class="drop-area" @files-dropped="dropFiles" #default="{ dropZoneActive }">

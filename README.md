@@ -67,3 +67,19 @@ artist has song bug
 - playlist functions
 - change the alert into new alert when optimize (make new alert cause today's alert bugged out)
 - what happened when upload a file twice
+- corrupt files
+
+* completed:
+- truncate text
+- added necessary back buttons
+
+21/2/2024: 
+- css: optimize css
+- delete function: havent delete in storage, conflict with audio function, solve related info when delete
+- image function: change user avatar, song's artwork, gallery
+- activity log function
+- change the alert into new alert when optimize (make new alert cause today's alert bugged out)
+- what happened when upload a file twice
+- corrupt files
+- playlist function: add song to playlist and delete from playlist
+- bonus:zwnj in php 

@@ -219,33 +219,39 @@ onMounted(() => {
 <template>
     <slot></slot>
     <div v-show="display" @playSong="onPlay()"
-        class="absolute bottom-0 left-0 sticky bg-red-400 text-center max-w-7xl mx-96 sm:px-6 lg:px-8">
-        <marquee id="songName" width="500px" scrollamount="1" direction="left">{{ currentPlaylist.length > 0 ?
+        class="absolute bottom-0 left-0 sticky bg-red-400 text-center max-w-7xl w-80 mx-auto">
+        <marquee id="songName" width="80%" scrollamount="1" direction="left">{{ currentPlaylist.length > 0 ?
             currentPlaylist[songIndex].name : '' }}</marquee>
         <audio :src="currentPlaylist.length > 0 ? currentPlaylist[songIndex].song_path : ''" ref="audio"
-            @timeupdate="updateProgress(audio.currentTime)" @ended="next()"></audio>
-        <div>
-            <span ref="currentTimeText">0:00</span>
-            <input type="range" name="progress" ref="progressBar" :max="audio.duration" @input="seek()" @change="play()">
-            {{ currentPlaylist.length > 0 ? currentPlaylist[songIndex].length : '' }}
-            <span class="float-right cursor-pointer" @click="close()">X</span>
+            @timeupdate="updateProgress(audio.currentTime)" @ended="next()" hidden></audio>
+        <div class="inline-block w-full mt-0 flex items-center">
+            <div class="flex justify-between w-2/3 ml-12 items-center">
+                <span ref="currentTimeText">0:00</span>
+                <input type="range" name="progress" ref="progressBar" :max="audio.duration" @input="seek()"
+                    @change="play()">
+
+                <span>{{ currentPlaylist.length > 0 ? currentPlaylist[songIndex].length : '' }}</span>
+            </div>
+            <span class="ml-10 float-right cursor-pointer" @click="close()">X</span>
         </div>
-        <font-awesome-icon :style="{ color: isShuffled ? 'red' : '' }" icon="fa-solid fa-shuffle" class="cursor-pointer"
-            @click="shuffleMusic()" />
-        <font-awesome-icon icon="fa-solid fa-repeat" class="ml-5 cursor-pointer" @click="loopMusic()" />
-        <font-awesome-icon icon="fa-solid fa-backward-fast" class="ml-5 cursor-pointer" @click="prev()" />
-        <font-awesome-icon :icon="isPlaying ? 'fa-pause' : 'fa-play'" class="ml-5 cursor-pointer"
-            @click="isPlaying ? pause() : play()" />
-        <font-awesome-icon icon="fa-solid fa-forward-fast" class="ml-5 cursor-pointer" @click="next()" />
-        <span>
-            <label for="volume" @click="mute()" @mouseover="volumeShow = true"
-                @mouseleave="volumeShow = false"><font-awesome-icon
-                    :icon="isMuted ? 'fa-solid fa-volume-mute' : 'fa-solid fa-volume-up'"
-                    class="ml-5 cursor-pointer" /></label>
-            <input @change="volumeZero()" @input="adjustVolume()" @mouseover="volumeShow = true"
-                @mouseleave="volumeShow = false" v-show="volumeShow" type="range" id="volume" v-model="volume" min="0"
-                max="100" class="cursor-pointer" step="1" style="margin-left: 10px ;width: 50px; height: 5px">
-        </span>
+        <div class="inline-block" @mouseleave="volumeShow = false">
+            <font-awesome-icon :style="{ color: isShuffled ? 'red' : '' }" icon="fa-solid fa-shuffle" class="cursor-pointer"
+                @click="shuffleMusic()" />
+            <font-awesome-icon icon="fa-solid fa-repeat" class="ml-5 cursor-pointer" @click="loopMusic()" />
+            <font-awesome-icon icon="fa-solid fa-backward-fast" class="ml-5 cursor-pointer" @click="prev()" />
+            <font-awesome-icon :icon="isPlaying ? 'fa-pause' : 'fa-play'" class="ml-5 cursor-pointer"
+                @click="isPlaying ? pause() : play()" />
+            <font-awesome-icon icon="fa-solid fa-forward-fast" class="ml-5 cursor-pointer" @click="next()" />
+            <span>
+                <label for="volume" @click="mute()" @mouseover="volumeShow = true"
+                  ><font-awesome-icon
+                        :icon="isMuted ? 'fa-solid fa-volume-mute' : 'fa-solid fa-volume-up'"
+                        class="ml-5 cursor-pointer" /></label>
+                <input @change="volumeZero()" @input="adjustVolume()" @mouseover="volumeShow = true"
+                    v-show="volumeShow" type="range" id="volume" v-model="volume" min="0"
+                    max="100" class="cursor-pointer" step="1" style="margin-left: 10px ;width: 50px; height: 5px">
+            </span>
+        </div>
     </div>
 </template>
 

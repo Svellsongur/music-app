@@ -59,7 +59,7 @@ class ArtistController extends Controller
             'data' => [
                 'songs' => $songs,
                 'totalSongs' => $totalSongs,
-                'backButton' => true,
+                'layoutType' => 2,
                 'title' => 'Artist ' . $artist->name,
             ],
             'message' => 'Success',

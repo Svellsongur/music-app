@@ -47,6 +47,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/playlists', [PlaylistController::class, 'index'])->name('playlists');
     Route::get('/playlists/detail/{id}', [PlaylistController::class, 'detail'])->name('playlists.detail');
     Route::post('/playlists/add', [PlaylistController::class, 'store'])->name('playlist.add');
+    Route::delete('/playlists/delete/{id}', [PlaylistController::class, 'destroy'])->name('playlist.delete');
+    Route::get('/playlists/add-song/{id}', [PlaylistController::class, 'addSong'])->name('playlist.add-song');
+
 
     //Albums
     Route::get('/albums', [AlbumController::class, 'index'])->name('albums');
