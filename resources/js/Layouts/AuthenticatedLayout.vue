@@ -22,6 +22,11 @@ const showingNavigationDropdown = ref(false);
 //logo
 const logo = usePage().props.auth.logo;
 
+Echo.channel('private-music-app-lavender'+usePage().props.auth.user.id).listen('.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', (data) => {
+    alert('Địt mẹ mày');
+    console.log(data);
+})
+
 </script>
 
 <template>

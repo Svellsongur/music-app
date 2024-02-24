@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { useForm } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DropZone from '@/Components/DropZone.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -9,6 +9,11 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faFileArrowDown, faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import FilePreview from '@/components/FilePreview.vue';
 import useFileList from '@/compositions/list-file.js';
+import AudioComponent from '@/Components/AudioComponent.vue';
+
+defineOptions({
+    layout: AudioComponent
+})
 
 const { files, addFiles } = useFileList()
 
@@ -42,7 +47,7 @@ const uploadSong = function () {
     // if (form.files.value) {
     form.post('/songs/add', {
         onBefore: () => alert('Songs uploaded successfully!'),
-        onSuccess: () => window.location.reload()
+        // onSuccess: () => router.get('/songs/add')
     })
     // }
 }

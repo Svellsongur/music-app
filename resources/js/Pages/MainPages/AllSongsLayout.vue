@@ -31,7 +31,9 @@ let playlists = usePage().props.auth.playlists;
 const deleteSong = function (id) {
     router.delete(`/songs/delete/${id}`, {
         onBefore: () => confirm('Are you sure you want to move this song to recycle bin? You can restore it later'),
-        onFinish: () => window.location.reload()
+        onFinish: () => {
+            document.querySelector('#song-'+id).remove();
+        }
     })
 }
 
@@ -101,14 +103,14 @@ const back = function () {
     </div>
     <div class="pb-10">
         <div class="grid grid-cols-3 max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="pt-8 mx-0" v-for="(song, index) in songs" :key="index">
-                <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8">
+            <div class="pt-8 mx-0" v-for="(song, index) in songs" :key="index" :id="'song-' + song.id">
+                <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8" >
                     <div class="bg-gray-300 overflow-hidden shadow-sm sm:rounded-lg">
                         <button type="button" @click="playSong(song, index)" class="p-3 text-gray-900 text-left">
                             <div class="grid grid-cols-12" v-for="artist, index in song.artists" :key="index">
                                 <div class="col-span-11 item-center py-2"
                                     :title="song.name + ' - ' + artist.artists + (song.album ? ' - ' + song.album : '')">
-                                    <div class="text-xl overflow-hidden">{{ song.name }}</div>
+                                    <div class="text-xl overflow-hidden truncate">{{ song.name }}</div>
                                     <div class="text-sm truncate"><span>
                                             <span v-if="index != 0">, </span>{{ artist.artists }}</span>
                                         <span v-if="song.album"> - {{ song.album }}</span>

@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Termwind\Components\Dd;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 
 class RecycleBinController extends Controller
@@ -87,8 +88,12 @@ class RecycleBinController extends Controller
         $trashedSong = Song::onlyTrashed()
             ->where('songs.id', $id)
             ->where('user_id', $user_id)
-            ->forceDelete();
+            ->first();
 
+        $dlted = unlink($trashedSong->song_path);
+        if ($dlted) {
+            $trashedSong->forceDelete();
+        }
         return Redirect::route('recycle-bin');
     }
 
@@ -97,7 +102,14 @@ class RecycleBinController extends Controller
         $user_id = auth()->user()->id;
         $trashedSongs = Song::onlyTrashed()
             ->where('user_id', $user_id)
-            ->forceDelete();
+            ->get();
+
+        foreach ($trashedSongs as $song) {
+            $dlted = unlink($song->song_path);
+            if ($dlted) {
+                $song->forceDelete();
+            }
+        }
 
         return Redirect::route('recycle-bin');
     }

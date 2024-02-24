@@ -58,7 +58,7 @@ const addPlaylist = function () {
 
 const deletePlaylist = function (id) {
     router.delete(`/playlists/delete/${id}`, {
-        onFinish: () => window.location.reload()
+        onFinish: () => router.get('/playlists')
     })
 }
 

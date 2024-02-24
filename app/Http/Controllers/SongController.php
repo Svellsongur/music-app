@@ -9,6 +9,7 @@ use App\Models\Album;
 use App\Models\Artist;
 use Illuminate\Http\Request;
 use App\Models\ArtistHasSong;
+use App\Notifications\ActivityLog;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -54,6 +55,10 @@ class SongController extends Controller
     public function store(Request $request)
     {
         if ($request->isMethod('POST')) {
+            $user = User::where('id', auth()->user()->id)->first();
+            $fileCount = 0;
+            $fileUploaded = [];
+
             foreach ($request->all() as $files) {
                 foreach ($files as $file) {
                     $originalFile = $file['file'];
@@ -63,13 +68,18 @@ class SongController extends Controller
 
                     $url = uploadfile('/user/' . auth()->user()->id . '/songs', $originalFile);
 
-                    $song = Song::create([
-                        'name' => $file->getTitle(),
-                        'length' => $file->getPlaytime(),
-                        'user_id' => auth()->user()->id,
-                        'song_path' => 'storage/' . $url,
-                    ]);
-
+                    if ($url) {
+                        $song = Song::create([
+                            'name' => $file->getTitle(),
+                            'length' => $file->getPlaytime(),
+                            'user_id' => auth()->user()->id,
+                            'song_path' => 'storage/' . $url,
+                        ]);
+                        $fileCount++;
+                        array_push($fileUploaded, $originalFile->getClientOriginalName());
+                    } else {
+                        return Inertia::render('MainPages/AddSong');
+                    }
                     //check artist
                     $hasArtist = Song::leftJoin('artists_has_songs', 'songs.id', '=', 'artists_has_songs.song_id')
                         ->leftJoin('artists', 'artists.id', '=', 'artists_has_songs.artist_id')
@@ -78,7 +88,6 @@ class SongController extends Controller
                         ->select('artists.id as artist_id')
                         ->first();
 
-                    // dd($hasArtist);
                     //check album
                     $hasAlbum = Song::leftJoin('albums', 'songs.album_id', '=', 'albums.id')
                         ->where('songs.user_id', auth()->user()->id)
@@ -118,6 +127,7 @@ class SongController extends Controller
                     }
                 }
             }
+            $user->notify(new ActivityLog($user->id, $fileCount, $fileUploaded));
         }
         return Inertia::render('MainPages/AddSong');
     }

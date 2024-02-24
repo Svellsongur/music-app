@@ -225,12 +225,11 @@ onMounted(() => {
         <audio :src="currentPlaylist.length > 0 ? currentPlaylist[songIndex].song_path : ''" ref="audio"
             @timeupdate="updateProgress(audio.currentTime)" @ended="next()" hidden></audio>
         <div class="inline-block w-full mt-0 flex items-center">
-            <div class="flex justify-between w-2/3 ml-12 items-center">
-                <span ref="currentTimeText">0:00</span>
+            <div class="flex justify-between ml-12 items-center">
+                <span ref="currentTimeText" class="mr-2">0:00</span>
                 <input type="range" name="progress" ref="progressBar" :max="audio.duration" @input="seek()"
                     @change="play()">
-
-                <span>{{ currentPlaylist.length > 0 ? currentPlaylist[songIndex].length : '' }}</span>
+                <span class="ml-2">{{ currentPlaylist.length > 0 ? currentPlaylist[songIndex].length : '' }}</span>
             </div>
             <span class="ml-10 float-right cursor-pointer" @click="close()">X</span>
         </div>

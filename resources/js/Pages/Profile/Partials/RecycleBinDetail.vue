@@ -36,7 +36,7 @@ const restoreSong = function (id) {
     if (confirm('Are you sure you want to restore this song?')) {
         router.post(`/recycle-bin/restore/${id}`, {
             onSuccess: () => alert('Song restored!'),
-            onFinish: () => window.location.reload()
+            onFinish: () => router.get('/recycle-bin')
         })
     }
 }

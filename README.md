@@ -83,3 +83,15 @@ artist has song bug
 - corrupt files
 - playlist function: add song to playlist and delete from playlist
 - bonus:zwnj in php 
+
+24/2/2024:
+* task left:
+- css: optimize css
+- delete function: conflict with audio function, solve related info when delete, all song layout bug
+- image function: change user avatar, song's artwork, gallery
+- activity log function: log list
+- change the alert into new alert when optimize (make new alert cause today's alert bugged out)
+- what happened when upload a file twice
+- playlist function: add song to playlist and delete from playlist
+- bonus:zwnj in php, corrupted (old) file 
+

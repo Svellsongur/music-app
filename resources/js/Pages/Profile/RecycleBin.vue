@@ -28,7 +28,7 @@ defineOptions({
 const restoreSong = function (id) {
     if (confirm('Are you sure you want to restore this song?')) {
         router.post(`/recycle-bin/restore/${id}`, {
-            onFinish: () => window.location.reload()
+            onFinish: () => router.get('/recycle-bin')
         })
     }
 }
@@ -36,14 +36,14 @@ const restoreSong = function (id) {
 const permaDeleteSong = function (id) {
     router.delete(`/recycle-bin/delete/${id}`, {
         onBefore: () => confirm('Are you sure you want to permanently delete this song?'),
-        onFinish: () => window.location.reload()
+        onFinish: () => router.get('/recycle-bin')
     })
 }
 
 const restoreAll = function () {
     if (confirm('Are you sure you want to restore all song?')) {
         router.post(`/recycle-bin/restore-all`, {
-            onFinish: () => window.location.reload()
+            onFinish: () => router.get('/recycle-bin')
         })
     }
 }
@@ -51,7 +51,7 @@ const restoreAll = function () {
 const deleteAll = function () {
     router.delete(`/recycle-bin/delete-all`, {
         onBefore: () => confirm('Are you sure you want to empty the recycle bin? This action cannot be undone and all your deleted songs will be lost!'),
-        onFinish: () => window.location.reload()
+        onFinish: () => router.get('/recycle-bin')
     })
 }
 
