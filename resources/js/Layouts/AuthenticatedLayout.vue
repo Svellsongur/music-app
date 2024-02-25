@@ -22,11 +22,15 @@ const showingNavigationDropdown = ref(false);
 //logo
 const logo = usePage().props.auth.logo;
 
-Echo.channel('private-music-app-lavender'+usePage().props.auth.user.id).listen('.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', (data) => {
-    alert('Địt mẹ mày');
+//notification activity log
+const showDot = ref(usePage().props.auth.showDot);
+
+Echo.channel('private-music-app-lavender' + usePage().props.auth.user.id).listen('.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', (data) => {
+    showDot.value = true;
     console.log(data);
 })
 
+console.log(usePage().props.auth.showDot);
 </script>
 
 <template>
@@ -75,6 +79,11 @@ Echo.channel('private-music-app-lavender'+usePage().props.auth.user.id).listen('
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                                                 <!-- {{ $page.props.auth.user.name }} -->
                                                 <img :src="$page.props.auth.user_avatar" class="w-10 h-10 rounded-full">
+                                                <span class="h-7" v-show="showDot">
+                                                    <div
+                                                        class="items-center w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
+                                                    </div>
+                                                </span>
                                                 <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd"
@@ -88,6 +97,14 @@ Echo.channel('private-music-app-lavender'+usePage().props.auth.user.id).listen('
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
                                         <DropdownLink :href="route('recycle-bin')"> Recycle Bin </DropdownLink>
+                                        <DropdownLink :href="route('activity-log')" class="inline-flex">
+                                            Activity log
+                                            <span class="h-5" v-show="showDot">
+                                                <div
+                                                    class="items-center w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
+                                                </div>
+                                            </span>
+                                        </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Log Out
                                         </DropdownLink>

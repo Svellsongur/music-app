@@ -87,7 +87,7 @@ artist has song bug
 24/2/2024:
 * task left:
 - css: optimize css
-- delete function: conflict with audio function, solve related info when delete, all song layout bug
+- delete function: conflict with audio function, solve related info when delete
 - image function: change user avatar, song's artwork, gallery
 - activity log function: log list
 - change the alert into new alert when optimize (make new alert cause today's alert bugged out)

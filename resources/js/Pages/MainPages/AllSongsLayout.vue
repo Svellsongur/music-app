@@ -32,7 +32,7 @@ const deleteSong = function (id) {
     router.delete(`/songs/delete/${id}`, {
         onBefore: () => confirm('Are you sure you want to move this song to recycle bin? You can restore it later'),
         onFinish: () => {
-            document.querySelector('#song-'+id).remove();
+            router.get('/songs')
         }
     })
 }
@@ -90,7 +90,7 @@ const back = function () {
                         v-if="totalSongs == 0">0</span>
                     <span v-else>{{ totalSongs }}</span>)
                 </h2>
-                <div class="col-end-16 col-start-13">
+                <div class="col-end-16 col-start-13 w-full">
                     <PrimaryButton @click="addSong()" style="margin-right: 0 !important;">Add Songs</PrimaryButton>
                 </div>
             </div>

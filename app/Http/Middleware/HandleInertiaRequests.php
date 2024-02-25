@@ -33,6 +33,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $showDot = true;
         if ($request->user()) {
             $playlists = Playlist::where('user_id', $request->user()->id)->get();
 
@@ -51,6 +52,16 @@ class HandleInertiaRequests extends Middleware
                     ->get();
             }
         }
+        if ($request->user()) {
+            if (!$request->user()->unreadNotifications()) {
+                $showDot = false;
+            }
+
+            $notifications =  [];
+            foreach ($request->user()->unreadNotifications as $notification) {
+                array_push($notifications, $notification->data);
+            }
+        }
         return [
             ...parent::share($request),
             'auth' => [
@@ -58,7 +69,8 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'user_avatar' => ($request->user() ? ($request->user()->avatar == null ? asset('/storage/system/default_images/default_avatar.jpg') : $request->user()->avatar) : null),
                 'allSongs' => $request->user() ? $songs : null,
-                'playlists' => $request->user() ? $playlists : null
+                'playlists' => $request->user() ? $playlists : null,
+                'showDot' => $showDot,
             ],
         ];
     }

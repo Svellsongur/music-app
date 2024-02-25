@@ -67,6 +67,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/recycle-bin/delete/{id}', [RecycleBinController::class, 'delete'])->name('recycle-bin.delete');
     Route::delete('/recycle-bin/delete-all', [RecycleBinController::class, 'deleteAll'])->name('recycle-bin.delete-all');
 
+    //Activity Log
+    Route::get('/activity-log', [ActivityController::class, 'index'])->name('activity-log');
 });
 
 Route::match(['get', 'post'], '/test', [SongController::class, 'check'])->name('test');
