@@ -158,8 +158,6 @@ class SongController extends Controller
                 ->select('artists.id as artist_id')
                 ->first();
 
-            // dd($hasArtist);
-
             $hasAlbum = Song::leftJoin('albums', 'songs.album_id', '=', 'albums.id')
                 ->where('songs.user_id', $user_id)
                 ->where('albums.name', trim($data->album))
@@ -224,6 +222,12 @@ class SongController extends Controller
 
     public function check()
     {
+        // $album = Album::leftJoin('songs', 'albums.id', '=', 'songs.album_id')
+        //     ->whereNull('songs.id')
+        //     ->select('albums.id')
+        //     ->delete();
+
+        // dd($album);
     }
 
     public function testVue()

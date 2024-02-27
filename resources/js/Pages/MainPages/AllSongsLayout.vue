@@ -32,7 +32,15 @@ const deleteSong = function (id) {
     router.delete(`/songs/delete/${id}`, {
         onBefore: () => confirm('Are you sure you want to move this song to recycle bin? You can restore it later'),
         onFinish: () => {
-            router.get('/songs')
+            router.get('/songs');
+            let playlist = JSON.parse(localStorage.getItem('currentPlaylist'));
+            playlist.forEach((song) => {
+                if (song.id == id) {
+                    playlist.splice(playlist.indexOf(song), 1);
+                    localStorage.setItem('currentPlaylist', JSON.stringify(playlist));
+                }
+            });
+            console.log(playlist);
         }
     })
 }

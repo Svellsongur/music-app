@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Album;
 use Carbon\Carbon;
 use App\Models\Song;
 use Inertia\Inertia;
+use App\Models\Artist;
 use Termwind\Components\Dd;
 use Illuminate\Http\Request;
+use App\Models\ArtistHasSong;
+use App\Models\PlaylistHasSong;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
@@ -93,6 +97,22 @@ class RecycleBinController extends Controller
         $dlted = unlink($trashedSong->song_path);
         if ($dlted) {
             $trashedSong->forceDelete();
+
+            $dltedDHS = PlaylistHasSong::where('song_id', $trashedSong->id);
+            if ($dltedDHS) {
+                $dltedDHS->delete();
+            }
+            $dltedAHS = ArtistHasSong::where('song_id', $trashedSong->id)->delete();
+            if ($dltedAHS) {
+                Artist::leftJoin('artists_has_songs', 'artists.id', '=', 'artists_has_songs.artist_id')
+                    ->whereNull('artists_has_songs.artist_id')
+                    ->delete();
+            }
+
+            Album::leftJoin('songs', 'albums.id', '=', 'songs.album_id')
+                ->whereNull('songs.id')
+                ->select('albums.id')
+                ->delete();
         }
         return Redirect::route('recycle-bin');
     }

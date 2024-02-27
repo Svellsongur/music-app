@@ -30,12 +30,11 @@ Echo.channel('private-music-app-lavender' + usePage().props.auth.user.id).listen
     console.log(data);
 })
 
-console.log(usePage().props.auth.showDot);
 </script>
 
 <template>
-    <div class="static">
-        <div class="min-h-screen bg-gray-100">
+
+        <div class="min-h-screen bg-gray-200">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -174,5 +173,5 @@ console.log(usePage().props.auth.showDot);
                 <slot />
             </main>
         </div>
-    </div>
+
 </template>

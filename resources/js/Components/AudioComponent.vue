@@ -30,17 +30,22 @@ let progressBar = ref(0);
 let progress = ref({});
 let audio = ref(new Audio());
 let currentTimeText = ref('00:00');
-let cancelFunction = ref(false);
 let display = ref(false);
 let isShuffled = ref(false);
 let songShuffled = ref(false);
 let isLooped = ref(false);
+let disableUpdateTimer = ref(false);
 
 //audio control functions
 const play = function () {
     display.value = true;
     audio.value.play();
     isPlaying.value = true;
+    if (currentPlaylist.value.length == 1) {
+        audio.value.setAttribute("loop", true)
+    } else {
+        audio.value.removeAttribute("loop")
+    }
 }
 
 const pause = function () {
@@ -49,6 +54,8 @@ const pause = function () {
 }
 
 const prev = function () {
+    isPlaying.value = false;
+    currentPlaylist.value = JSON.parse(localStorage.getItem('currentPlaylist'));
     let currentSong = currentPlaylist.value[songIndex.value];
     if (isShuffled.value == true && songShuffled.value == false) {
         shuffle(currentPlaylist.value);
@@ -68,9 +75,12 @@ const prev = function () {
         audio.value.play();
     }
     localStorage.setItem('index', songIndex.value);
+    isPlaying.value = true;
 }
 
 const next = function () {
+    isPlaying.value = false;
+    currentPlaylist.value = JSON.parse(localStorage.getItem('currentPlaylist'));
     let currentSong = currentPlaylist.value[songIndex.value];
     if (isShuffled.value == true && songShuffled.value == false) {
         shuffle(currentPlaylist.value);
@@ -92,8 +102,7 @@ const next = function () {
         audio.value.play();
     }
     localStorage.setItem('index', songIndex.value);
-    console.log('isShuffled:' + isShuffled.value);
-    console.log('songShuffled:' + songShuffled.value);
+    isPlaying.value = true;
 }
 
 const onPlay = function () {
@@ -134,21 +143,25 @@ const volumeZero = function () {
 
 //seek functions
 const updateProgress = function (time) {
-    if (cancelFunction.value == false) {
-        progressBar.value.value = time;
-        let secs = `${parseInt(`${time % 60}`, 10)}`.padStart(2, '0');
-        let mins = parseInt(`${(time / 60) % 60}`, 10);
-        currentTimeText.value.innerHTML = `${mins}:${secs}`;
-    }
+    // if (disableTimeupdate) return;
+    progressBar.value.value = time;
+    let secs = `${parseInt(`${time % 60}`, 10)}`.padStart(2, '0');
+    let mins = parseInt(`${(time / 60) % 60}`, 10);
+    currentTimeText.value.innerHTML = `${mins}:${secs}`;
+}
+
+// const stopFunction = debounce(function () {
+//     disableUpdateTimer.value = true;
+// }, 1000);
+
+const stopTimeUpdate = function () {
+    pause();
+    // stopFunction();
 }
 
 const seek = function () {
-    pause();
-    cancelFunction.value = true;
     audio.value.currentTime = progressBar.value.value;
-    setTimeout(() => {
-        cancelFunction.value = false
-    }, 10)
+    play()
 }
 
 const close = function () {
@@ -205,7 +218,9 @@ eventBus.on('playSong', (index) => {
     display.value = true;
     audio.value.oncanplaythrough = () => {
         audio.value.play();
+        progressBar.value.setAttribute("max", audio.value.duration);
     }
+
 })
 
 onMounted(() => {
@@ -227,8 +242,8 @@ onMounted(() => {
         <div class="inline-block w-full mt-0 flex items-center">
             <div class="flex justify-between ml-12 items-center">
                 <span ref="currentTimeText" class="mr-2">0:00</span>
-                <input type="range" name="progress" ref="progressBar" :max="audio.duration" @input="seek()"
-                    @change="play()">
+                <input type="range" name="progress" ref="progressBar" :max="audio.duration" @input="stopTimeUpdate()"
+                    @change="seek()" @click="stopTimeUpdate()">
                 <span class="ml-2">{{ currentPlaylist.length > 0 ? currentPlaylist[songIndex].length : '' }}</span>
             </div>
             <span class="ml-10 float-right cursor-pointer" @click="close()">X</span>
@@ -242,13 +257,12 @@ onMounted(() => {
                 @click="isPlaying ? pause() : play()" />
             <font-awesome-icon icon="fa-solid fa-forward-fast" class="ml-5 cursor-pointer" @click="next()" />
             <span>
-                <label for="volume" @click="mute()" @mouseover="volumeShow = true"
-                  ><font-awesome-icon
+                <label for="volume" @click="mute()" @mouseover="volumeShow = true"><font-awesome-icon
                         :icon="isMuted ? 'fa-solid fa-volume-mute' : 'fa-solid fa-volume-up'"
                         class="ml-5 cursor-pointer" /></label>
-                <input @change="volumeZero()" @input="adjustVolume()" @mouseover="volumeShow = true"
-                    v-show="volumeShow" type="range" id="volume" v-model="volume" min="0"
-                    max="100" class="cursor-pointer" step="1" style="margin-left: 10px ;width: 50px; height: 5px">
+                <input @change="volumeZero()" @input="adjustVolume()" @mouseover="volumeShow = true" v-show="volumeShow"
+                    type="range" id="volume" v-model="volume" min="0" max="100" class="cursor-pointer" step="1"
+                    style="margin-left: 10px ;width: 50px; height: 5px">
             </span>
         </div>
     </div>

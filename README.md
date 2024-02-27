@@ -93,5 +93,6 @@ artist has song bug
 - change the alert into new alert when optimize (make new alert cause today's alert bugged out)
 - what happened when upload a file twice
 - playlist function: add song to playlist and delete from playlist
+- debounce still bugged
 - bonus:zwnj in php, corrupted (old) file 
 

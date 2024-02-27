@@ -7,6 +7,7 @@ use App\Http\Controllers\SongController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\RecycleBinController;
 
