@@ -47,7 +47,7 @@ const uploadSong = function () {
     // if (form.files.value) {
     form.post('/songs/add', {
         onBefore: () => alert('Songs uploaded successfully!'),
-        // onSuccess: () => router.get('/songs/add')
+        onSuccess: () => router.get('/songs/add')
     })
     // }
 }
@@ -71,7 +71,7 @@ const back = function () {
         <div class="pt-8 max-w-6xl mx-auto mb-10">
             <form @submit.prevent="uploadSong" enctype="multipart/form-data">
                 <DropZone class="drop-area" @files-dropped="dropFiles" #default="{ dropZoneActive }">
-                    <div class="text-gray text-center z-10">
+                    <div class="text-gray text-center z-2">
                         <label for="file-input" class="btn text-sky-500 underline decoration-sky-500"
                             style="cursor:pointer">
                             <span v-if="dropZoneActive">

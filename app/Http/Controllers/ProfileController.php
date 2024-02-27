@@ -29,6 +29,11 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        if ($request->avatar != null){
+            $url = uploadfile('/storage/user/' . auth()->user()->id . '/library', $request->avatar);
+            $request->user()->avatar = $url;
+        }
+
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {

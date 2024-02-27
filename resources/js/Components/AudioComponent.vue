@@ -12,6 +12,7 @@ library.add(faPlay, faPause, faForwardFast, faBackwardFast, faVolumeUp, faVolume
 //local storage
 
 const songs = usePage().props.auth.allSongs;
+const default_artwork = 'http://music-app.test/storage/system/default_images/default_artwork(1).jpg';
 
 //audio functions
 //needed variable
@@ -27,14 +28,13 @@ let volumeShow = ref(false);
 let volume = ref(localStorage.getItem('volume'));
 let isMuted = ref(false);
 let progressBar = ref(0);
-let progress = ref({});
 let audio = ref(new Audio());
 let currentTimeText = ref('00:00');
 let display = ref(false);
 let isShuffled = ref(false);
 let songShuffled = ref(false);
 let isLooped = ref(false);
-let disableUpdateTimer = ref(false);
+
 
 //audio control functions
 const play = function () {
@@ -73,6 +73,7 @@ const prev = function () {
     }
     audio.value.oncanplaythrough = () => {
         audio.value.play();
+        progressBar.value.setAttribute("max", audio.value.duration);
     }
     localStorage.setItem('index', songIndex.value);
     isPlaying.value = true;
@@ -89,7 +90,6 @@ const next = function () {
     if (isShuffled.value == false && songShuffled.value == true) {
         currentPlaylist.value.sort();
         songShuffled.value = false;
-        // console.log(currentPlaylist.value);
     }
     songIndex.value++;
     if (songIndex.value >= currentPlaylist.value.length) {
@@ -100,6 +100,7 @@ const next = function () {
     }
     audio.value.oncanplaythrough = () => {
         audio.value.play();
+        progressBar.value.setAttribute("max", audio.value.duration);
     }
     localStorage.setItem('index', songIndex.value);
     isPlaying.value = true;
@@ -217,7 +218,11 @@ eventBus.on('playSong', (index) => {
     isPlaying.value = true;
     display.value = true;
     audio.value.oncanplaythrough = () => {
-        audio.value.play();
+        if (volume.value == null) {
+            localStorage.setItem('volume', 20);
+            audio.value.volume = 20 / 100;
+        };
+        play();
         progressBar.value.setAttribute("max", audio.value.duration);
     }
 
@@ -234,36 +239,46 @@ onMounted(() => {
 <template>
     <slot></slot>
     <div v-show="display" @playSong="onPlay()"
-        class="absolute bottom-0 left-0 sticky bg-red-400 text-center max-w-7xl w-80 mx-auto">
-        <marquee id="songName" width="80%" scrollamount="1" direction="left">{{ currentPlaylist.length > 0 ?
-            currentPlaylist[songIndex].name : '' }}</marquee>
-        <audio :src="currentPlaylist.length > 0 ? currentPlaylist[songIndex].song_path : ''" ref="audio"
-            @timeupdate="updateProgress(audio.currentTime)" @ended="next()" hidden></audio>
-        <div class="inline-block w-full mt-0 flex items-center">
-            <div class="flex justify-between ml-12 items-center">
-                <span ref="currentTimeText" class="mr-2">0:00</span>
-                <input type="range" name="progress" ref="progressBar" :max="audio.duration" @input="stopTimeUpdate()"
-                    @change="seek()" @click="stopTimeUpdate()">
-                <span class="ml-2">{{ currentPlaylist.length > 0 ? currentPlaylist[songIndex].length : '' }}</span>
+        class="absolute bottom-0 left-0 sticky text-center max-w-7xl w-96 mx-auto divide-x"
+        style="background-color: #B1AFAF !important;">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <img class="w-20 h-20" :src="currentPlaylist[songIndex].artwork_path ? currentPlaylist[songIndex].artwork_path : default_artwork">
             </div>
-            <span class="ml-10 float-right cursor-pointer" @click="close()">X</span>
-        </div>
-        <div class="inline-block" @mouseleave="volumeShow = false">
-            <font-awesome-icon :style="{ color: isShuffled ? 'red' : '' }" icon="fa-solid fa-shuffle" class="cursor-pointer"
-                @click="shuffleMusic()" />
-            <font-awesome-icon icon="fa-solid fa-repeat" class="ml-5 cursor-pointer" @click="loopMusic()" />
-            <font-awesome-icon icon="fa-solid fa-backward-fast" class="ml-5 cursor-pointer" @click="prev()" />
-            <font-awesome-icon :icon="isPlaying ? 'fa-pause' : 'fa-play'" class="ml-5 cursor-pointer"
-                @click="isPlaying ? pause() : play()" />
-            <font-awesome-icon icon="fa-solid fa-forward-fast" class="ml-5 cursor-pointer" @click="next()" />
-            <span>
-                <label for="volume" @click="mute()" @mouseover="volumeShow = true"><font-awesome-icon
-                        :icon="isMuted ? 'fa-solid fa-volume-mute' : 'fa-solid fa-volume-up'"
-                        class="ml-5 cursor-pointer" /></label>
-                <input @change="volumeZero()" @input="adjustVolume()" @mouseover="volumeShow = true" v-show="volumeShow"
-                    type="range" id="volume" v-model="volume" min="0" max="100" class="cursor-pointer" step="1"
-                    style="margin-left: 10px ;width: 50px; height: 5px">
-            </span>
+            <div class="flex-1">
+                <div>
+                    <marquee id="songName" width="100%" scrollamount="1" direction="left">{{ currentPlaylist.length > 0 ?
+                        currentPlaylist[songIndex].name : '' }}</marquee>
+                    <audio :src="currentPlaylist.length > 0 ? currentPlaylist[songIndex].song_path : ''" ref="audio"
+                        @timeupdate="updateProgress(audio.currentTime)" @ended="next()" hidden></audio>
+                </div>
+                <div class="inline-block w-full flex items-center">
+                    <div class="flex justify-between ml-10 items-center">
+                        <span ref="currentTimeText" class="mr-2">0:00</span>
+                        <input type="range" name="progress" ref="progressBar" :max="audio.duration"
+                            @input="stopTimeUpdate()" @change="seek()" @click="stopTimeUpdate()">
+                        <span class="ml-2">{{ currentPlaylist.length > 0 ? currentPlaylist[songIndex].length : '' }}</span>
+                    </div>
+                    <span class="ml-8 float-right cursor-pointer" @click="close()">X</span>
+                </div>
+                <div class="inline-block" @mouseleave="volumeShow = false">
+                    <font-awesome-icon :style="{ color: isShuffled ? 'red' : '' }" icon="fa-solid fa-shuffle"
+                        class="cursor-pointer" @click="shuffleMusic()" />
+                    <font-awesome-icon icon="fa-solid fa-repeat" class="ml-5 cursor-pointer" @click="loopMusic()" />
+                    <font-awesome-icon icon="fa-solid fa-backward-fast" class="ml-5 cursor-pointer" @click="prev()" />
+                    <font-awesome-icon :icon="isPlaying ? 'fa-pause' : 'fa-play'" class="ml-5 cursor-pointer"
+                        @click="isPlaying ? pause() : play()" />
+                    <font-awesome-icon icon="fa-solid fa-forward-fast" class="ml-5 cursor-pointer" @click="next()" />
+                    <span>
+                        <label for="volume" @click="mute()" @mouseover="volumeShow = true"><font-awesome-icon
+                                :icon="isMuted ? 'fa-solid fa-volume-mute' : 'fa-solid fa-volume-up'"
+                                class="ml-5 cursor-pointer" /></label>
+                        <input @change="volumeZero()" @input="adjustVolume()" @mouseover="volumeShow = true"
+                            v-show="volumeShow" type="range" id="volume" v-model="volume" min="0" max="100"
+                            class="cursor-pointer" step="1" style="margin-left: 10px ;width: 50px; height: 5px">
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 </template>

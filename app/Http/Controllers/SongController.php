@@ -64,7 +64,10 @@ class SongController extends Controller
                     $originalFile = $file['file'];
                     $file = new GetId3($file['file']);
 
-                    // dd($file->extractInfo());
+                    // dd($file->getArtwork(true));
+                    if ($file->getArtwork(true) != null) {
+                        $artwork = uploadfile('/user/' . auth()->user()->id . '/songs/artworks', $file->getArtwork(true));
+                    }
 
                     $url = uploadfile('/user/' . auth()->user()->id . '/songs', $originalFile);
 
@@ -74,6 +77,7 @@ class SongController extends Controller
                             'length' => $file->getPlaytime(),
                             'user_id' => auth()->user()->id,
                             'song_path' => 'storage/' . $url,
+                            'artwork_path' => $file->getArtwork(true) ? 'storage/' . $artwork : null,
                         ]);
                         $fileCount++;
                         array_push($fileUploaded, $originalFile->getClientOriginalName());
