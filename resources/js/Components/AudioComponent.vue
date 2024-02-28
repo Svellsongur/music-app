@@ -5,12 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlay, faPause, faForwardFast, faBackwardFast, faVolumeUp, faVolumeMute, faRepeat, faShuffle } from '@fortawesome/free-solid-svg-icons';
 import { eventBus } from '@/eventBus.js';
+import { debounce } from 'underscore'
 import "../../css/range.css";
 
 library.add(faPlay, faPause, faForwardFast, faBackwardFast, faVolumeUp, faVolumeMute, faRepeat, faShuffle);
 
 //local storage
-
 const songs = usePage().props.auth.allSongs;
 const default_artwork = 'http://music-app.test/storage/system/default_images/default_artwork(1).jpg';
 
@@ -19,6 +19,8 @@ const default_artwork = 'http://music-app.test/storage/system/default_images/def
 let isPlaying = ref(false);
 let songIndex = ref(localStorage.getItem('index') || 0);
 let currentPlaylist = ref(JSON.parse(localStorage.getItem('currentPlaylist')) || []);
+var disableTimeupdate = false;
+
 
 //debug lines
 // let currentPlaylist = ref(songs);
@@ -144,20 +146,21 @@ const volumeZero = function () {
 
 //seek functions
 const updateProgress = function (time) {
-    // if (disableTimeupdate) return;
+    if (disableTimeupdate) return;
     progressBar.value.value = time;
     let secs = `${parseInt(`${time % 60}`, 10)}`.padStart(2, '0');
     let mins = parseInt(`${(time / 60) % 60}`, 10);
     currentTimeText.value.innerHTML = `${mins}:${secs}`;
 }
 
-// const stopFunction = debounce(function () {
-//     disableUpdateTimer.value = true;
-// }, 1000);
+const stopFunction = debounce(function() {
+    disableTimeupdate = false;
+}, 500);
 
 const stopTimeUpdate = function () {
     pause();
-    // stopFunction();
+    disableTimeupdate = true;
+    stopFunction();
 }
 
 const seek = function () {
@@ -189,13 +192,13 @@ const shuffleMusic = function () {
     if (isShuffled.value == false) {
         isShuffled.value = true;
         songShuffled.value = false;
-        console.log('isShuffled:' + isShuffled.value);
-        console.log('songShuffled:' + songShuffled.value);
+        // console.log('isShuffled:' + isShuffled.value);
+        // console.log('songShuffled:' + songShuffled.value);
     } else {
         isShuffled.value = false;
         songShuffled.value = true;
-        console.log('isShuffled:' + isShuffled.value);
-        console.log('songShuffled:' + songShuffled.value);
+        // console.log('isShuffled:' + isShuffled.value);
+        // console.log('songShuffled:' + songShuffled.value);
     }
 }
 
@@ -243,7 +246,8 @@ onMounted(() => {
         style="background-color: #B1AFAF !important;">
         <div class="flex">
             <div class="flex-shrink-0">
-                <img class="w-20 h-20" :src="currentPlaylist[songIndex].artwork_path ? currentPlaylist[songIndex].artwork_path : default_artwork">
+                <img class="w-20 h-20"
+                    :src="currentPlaylist[songIndex].artwork_path ? currentPlaylist[songIndex].artwork_path : default_artwork">
             </div>
             <div class="flex-1">
                 <div>

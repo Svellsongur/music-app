@@ -25,6 +25,7 @@
         "date-fns": "^3.3.0",
         "laravel-echo": "^1.16.0",
         "mitt": "^3.0.1",
-        "pusher-js": "^8.4.0-rc2"
+        "pusher-js": "^8.4.0-rc2",
+        "underscore": "^1.13.6"
     }
 }
