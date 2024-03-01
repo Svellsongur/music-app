@@ -103,3 +103,5 @@ artist has song bug
 - pop out music panel (27/2 new task)
 - validate (27/2 new task)
 - bonus:zwnj in php, corrupted (old) file 
+
+2:37 AM 2/3/2024: first release (still not have any convenient feature yet but in the future will)
