@@ -8,6 +8,11 @@ import TextInput from '@/Components/TextInput.vue';
 import { ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { format } from 'date-fns';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faCircleArrowLeft);
 
 const song = usePage().props.data.song;
 
@@ -28,8 +33,11 @@ const title = song.name + " detail";
 const songAnotherInfo = {
     'length': 'Length: ' + song.length,
     'uploaded_at': 'Uploaded at: ' + format(song.created_at, "dd/MM/yyyy HH:mm:ss")
-
 };
+
+const back = function () {
+    window.history.back();
+}
 </script>
 
 <template>
@@ -39,6 +47,12 @@ const songAnotherInfo = {
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ title }}</h2>
         </template>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-3">
+            <button @click="back()">
+                <font-awesome-icon class="mx-auto mt-3" icon="fa-solid fa-circle-arrow-left" size="xl"
+                    style="cursor:pointer" />
+            </button>
+        </div>
         <form @submit.prevent="form.post(route('songs.update', song.id))"
             class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-3">
             <div>

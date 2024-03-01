@@ -111,7 +111,7 @@ const detailPlaylist = function (id) {
                                                     :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Details
                                                 </a>
                                                 </MenuItem>
-                                                <MenuItem v-slot="{ active }">
+                                                <MenuItem v-slot="{ active }" v-if="playlist.name != 'Favorite'">
                                                 <a @click="deletePlaylist(playlist.id)" style="cursor: pointer;"
                                                     :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Delete</a>
                                                 </MenuItem>

@@ -98,8 +98,7 @@ artist has song bug
 
 27/2/2024:
 * task left: 
-- css: optimize css
-- playlist function: add song to playlist and delete from playlist
+- css: optimize css (kinda)
 - sort, search & pagnition (27/2 new task)
 - pop out music panel (27/2 new task)
 - validate (27/2 new task)

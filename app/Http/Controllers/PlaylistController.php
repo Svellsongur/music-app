@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use stdClass;
+use App\Models\Song;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Playlist;
 use Illuminate\Http\Request;
 use App\Models\ArtistHasSong;
+use App\Models\PlaylistHasSong;
 use App\Notifications\ActivityLog;
 use Illuminate\Support\Facades\DB;
+use Termwind\Components\Dd;
 
 class PlaylistController extends Controller
 {
@@ -75,6 +77,7 @@ class PlaylistController extends Controller
                 'songs' => $songs,
                 'totalSongs' => $totalSongs,
                 'layoutType' => 3,
+                'playlist_id' => $id,
                 'title' => 'Songs in ' . $playlists->name,
             ],
             'message' => 'Success',
@@ -110,8 +113,71 @@ class PlaylistController extends Controller
         ]);
     }
 
-    public function addSong(Request $request, string $id)
+    //add song to multiple playlist
+    public function addSong(Request $request, string $song_id)
     {
+        $songHasPlaylist = Playlist::where('user_id', auth()->user()->id)
+            ->whereNotIn('id', function ($query) use ($song_id) {
+                $query->select('playlist_id')
+                    ->from('playlists_has_songs')
+                    ->where('song_id', $song_id);
+            })->get();
+
+        if ($request->isMethod('POST')) {
+            $playlists = $request->playlist_id;
+            foreach ($playlists as $playlist) {
+                PlaylistHasSong::create([
+                    'playlist_id' => $playlist,
+                    'song_id' => $song_id
+                ]);
+            }
+
+            return Inertia::render('MainPages/AddSongToPlaylist', [
+                'playlist' => $songHasPlaylist,
+                'title' => 'Add to Playlists',
+                'song_id' => $song_id
+            ]);
+        }
+
+        return Inertia::render('MainPages/AddSongToPlaylist', [
+            'playlist' => $songHasPlaylist,
+            'title' => 'Add to Playlists',
+            'song_id' => $song_id
+        ]);
+    }
+
+    public function addSongToPlaylist(Request $request, string $id)
+    {
+        $playlist = Playlist::where('id', $id)->first();
+        $songs = Song::where('user_id', auth()->user()->id)
+            ->whereNotIn('id', function ($query) use ($id) {
+                $query->select('song_id')
+                    ->from('playlists_has_songs')
+                    ->where('song_id', $id);
+            })->get();
+
+        if ($request->isMethod('POST')) {
+            $songs = $request->song_id;
+            foreach ($songs as $song) {
+                PlaylistHasSong::create([
+                    'playlist_id' => $id,
+                    'song_id' => $song
+                ]);
+            }
+        }
+
+        return Inertia::render('MainPages/AddPlaylistToSong', [
+            'songs' => $songs,
+            'title' => 'Add to ' . $playlist->name,
+            'playlist_id' => $id
+        ]);
+    }
+
+    public function removeSong(string $playlistID, string $id)
+    {
+        PlaylistHasSong::where('playlist_id', $playlistID)
+            ->where('song_id', $id)
+            ->delete();
     }
 
     public function update(Request $request)
@@ -123,6 +189,7 @@ class PlaylistController extends Controller
         $user = User::where('id', auth()->user()->id)->first();
         $playlist = Playlist::where('id', $id)->first();
         $playlist->delete();
+        PlaylistHasSong::where('playlist_id', $id)->delete();
         $fileName = [];
         array_push($fileName, $playlist->name);
         $user->notify(new ActivityLog($user->id, '0', $fileName, '2', '2'));

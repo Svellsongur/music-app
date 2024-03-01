@@ -71,7 +71,7 @@ class HandleInertiaRequests extends Middleware
                 'user_avatar' => ($request->user() ? ($request->user()->avatar == null ? asset('/storage/system/default_images/default_avatar.jpg') : $request->user()->avatar) : null),
                 'allSongs' => $request->user() ? $songs : null,
                 'playlists' => $request->user() ? $playlists : null,
-                'showDot' => $showDot,
+                'showDot' => $request->user() ? $showDot : null,
             ],
         ];
     }

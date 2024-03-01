@@ -79,7 +79,7 @@ class SongController extends Controller
                             'length' => $file->getPlaytime(),
                             'user_id' => auth()->user()->id,
                             'song_path' => $url,
-                            'artwork_path' => $file->getArtwork(true) ? 'storage/' . $artwork : null,
+                            'artwork_path' => $file->getArtwork(true) ? 'http://music-app.test/storage/' . $artwork : null,
                         ]);
                         $fileCount++;
                         array_push($fileUploaded, $file->getTitle());

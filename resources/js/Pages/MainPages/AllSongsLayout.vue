@@ -6,12 +6,7 @@ import { faEllipsisVertical, faCircleArrowLeft } from '@fortawesome/free-solid-s
 import { router, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { eventBus } from '@/eventBus.js';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
-import InputError from '@/Components/InputError.vue';
-import { ref, toRef } from 'vue';
+import Swal from 'sweetalert2';
 
 library.add(faEllipsisVertical, faCircleArrowLeft);
 
@@ -25,8 +20,12 @@ let songs = props.data.songs;
 let totalSongs = props.data.totalSongs;
 let title = props.data.title;
 let type = props.data.layoutType;
-let allSongs = usePage().props.auth.allSongs;
-let playlists = usePage().props.auth.playlists;
+let showBackBtn = false;
+console.log(songs);
+if (type != 1) {
+    showBackBtn = true;
+}
+
 
 const deleteSong = function (id) {
     router.delete(`/songs/delete/${id}`, {
@@ -40,7 +39,6 @@ const deleteSong = function (id) {
                     localStorage.setItem('currentPlaylist', JSON.stringify(playlist));
                 }
             });
-            console.log(playlist);
         }
     })
 }
@@ -61,30 +59,28 @@ const playSong = function (song, index) {
     }
 }
 
-//modal functions
-let openModal = ref(false);
-let showBackBtn = false;
-let openAllPlaylist = ref(false);
-
-const openAllPlaylistModal = function () {
-    openAllPlaylist.value = true;
-}
-
-const closeAllPlaylistModal = function () {
-    openAllPlaylist.value = false;
-}
-
-if (type != 1) {
-    showBackBtn = true;
-}
-const closeModal = function () {
-    openModal.value = false;
-}
-
+//add song to playlist functions
 const addSongToPlaylist = function (id) {
-    openModal.value = true;
+    router.get(`/playlists/add-song/${id}`);
 }
 
+const removeFromPlaylist = function (id) {
+    router.delete(`/playlists/remove-song/${props.data.playlist_id}/${id}`, {
+        onSuccess: () => {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Remove song from playlists successfully!',
+                icon: 'success',
+                confirmButtonText: 'Ok'
+            });
+            router.get('/playlists/detail/' + props.data.playlist_id)
+        }
+    });
+}
+
+const addSongsToPlaylist = function () {
+    router.get('/playlists/add-songs-to-playlist/' + props.data.playlist_id);
+}
 //except all songs layout
 const back = function () {
     window.history.back();
@@ -112,7 +108,7 @@ const back = function () {
     <div class="pb-10">
         <div class="grid grid-cols-3 max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="pt-8 mx-0" v-for="(song, index) in songs" :key="index" :id="'song-' + song.id">
-                <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8" >
+                <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8">
                     <div class="bg-gray-300 overflow-hidden shadow-sm sm:rounded-lg">
                         <button type="button" @click="playSong(song, index)" class="p-3 text-gray-900 text-left">
                             <div class="grid grid-cols-12" v-for="artist, index in song.artists" :key="index">
@@ -153,7 +149,7 @@ const back = function () {
                                                         to Recycle Bin</a>
                                                     </MenuItem>
                                                     <MenuItem v-slot="{ active }">
-                                                    <a @click="openAllPlaylistModal()" style="cursor: pointer;"
+                                                    <a @click="addSongToPlaylist(song.id)" style="cursor: pointer;"
                                                         :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-xs']">Add
                                                         to playlist</a>
                                                     </MenuItem>
@@ -166,37 +162,18 @@ const back = function () {
                                             </MenuItems>
                                         </transition>
                                     </Menu>
-
-                                    <Modal :show="openAllPlaylist" @close="closeAllPlaylistModal">
-                                        <div class="p-6">
-                                            <div class="text-lg font-medium text-gray-900">Choose Playlists</div>
-                                            <div class="mt-6 grids grid-cols-2">
-                                                <div class="flex items-center mb-4" v-for="playlist in playlists">
-                                                    <input id="default-radio-1" type="radio" value="" name="default-radio"
-                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                    <label for="default-radio-1"
-                                                        class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 text-truncate">{{
-                                                            playlist.name }}
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="mt-6 flex justify-end">
-                                                <SecondaryButton @click="closeAllPlaylistModal()"> Cancel </SecondaryButton>
-                                            </div>
-                                        </div>
-                                    </Modal>
                                 </div>
                             </div>
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="pt-8 mx-10" v-if="type == 3" @click="openAddToPlaylistModal()">
+            <div class="pt-8 mx-10" v-if="type == 3" @click="addSongsToPlaylist()">
                 <div class="max-w-xl mx-0 pr-0 sm:px-6 lg:px-8 ">
                     <button
                         class="w-full py-2 bg-gray-300 overflow-hidden shadow-sm sm:rounded-lg hover:bg-gray-50 text-center">
                         <div class="p-2 text-gray-900">
-                            <div class="text-xl overflow-hidden">Add new playlist +</div>
+                            <div class="text-xl overflow-hidden">Add new songs+</div>
                         </div>
                     </button>
                 </div>
