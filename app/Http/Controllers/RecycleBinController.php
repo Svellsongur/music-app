@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Album;
 use Carbon\Carbon;
 use App\Models\Song;
+use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Album;
 use App\Models\Artist;
 use Termwind\Components\Dd;
 use Illuminate\Http\Request;
 use App\Models\ArtistHasSong;
 use App\Models\PlaylistHasSong;
+use App\Notifications\ActivityLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
@@ -88,11 +90,12 @@ class RecycleBinController extends Controller
 
     public function delete(Request $request, string $id)
     {
-        $user_id = auth()->user()->id;
+        $user = User::where('id', auth()->user()->id)->first();
         $trashedSong = Song::onlyTrashed()
             ->where('songs.id', $id)
-            ->where('user_id', $user_id)
+            ->where('user_id', $user->id)
             ->first();
+        $fileName = [];
 
         $dlted = unlink($trashedSong->song_path);
         if ($dlted) {
@@ -113,24 +116,33 @@ class RecycleBinController extends Controller
                 ->whereNull('songs.id')
                 ->select('albums.id')
                 ->delete();
+
+            array_push($fileName, $trashedSong->name);
         }
+        $user->notify(new ActivityLog($user->id, '1', $fileName, '1', '2'));
         return Redirect::route('recycle-bin');
     }
 
     public function deleteAll(Request $request)
     {
-        $user_id = auth()->user()->id;
+        $user = User::where('id', auth()->user()->id)->first();
+        $fileCount = 0;
+        $fileDeleted = [];
+
         $trashedSongs = Song::onlyTrashed()
-            ->where('user_id', $user_id)
+            ->where('user_id', $user->id)
             ->get();
 
         foreach ($trashedSongs as $song) {
             $dlted = unlink($song->song_path);
             if ($dlted) {
                 $song->forceDelete();
+                $fileCount++;
+                array_push($fileDeleted, $song->name);
             }
         }
 
+        $user->notify(new ActivityLog($user->id, $fileCount, $fileDeleted, '1', '2'));
         return Redirect::route('recycle-bin');
     }
 

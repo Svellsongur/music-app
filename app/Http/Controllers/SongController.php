@@ -69,20 +69,26 @@ class SongController extends Controller
                         $artwork = uploadfile('/user/' . auth()->user()->id . '/songs/artworks', $file->getArtwork(true));
                     }
 
-                    $url = uploadfile('/user/' . auth()->user()->id . '/songs', $originalFile);
+                    $url = 'storage/' .  uploadfile('/user/' . auth()->user()->id . '/songs', $originalFile);
 
-                    if ($url) {
+                    $hasUrl = Song::where('song_path', $url)->first();
+
+                    if (!$hasUrl) {
                         $song = Song::create([
                             'name' => $file->getTitle(),
                             'length' => $file->getPlaytime(),
                             'user_id' => auth()->user()->id,
-                            'song_path' => 'storage/' . $url,
+                            'song_path' => $url,
                             'artwork_path' => $file->getArtwork(true) ? 'storage/' . $artwork : null,
                         ]);
                         $fileCount++;
-                        array_push($fileUploaded, $originalFile->getClientOriginalName());
+                        array_push($fileUploaded, $file->getTitle());
                     } else {
-                        return Inertia::render('MainPages/AddSong');
+                        return Inertia::render('MainPages/AddSong', [
+                            'error' => 'File Duplicated!'
+                        ])->withViewData([
+                            'error' => true,
+                        ]);
                     }
                     //check artist
                     $hasArtist = Song::leftJoin('artists_has_songs', 'songs.id', '=', 'artists_has_songs.song_id')
@@ -131,7 +137,10 @@ class SongController extends Controller
                     }
                 }
             }
-            $user->notify(new ActivityLog($user->id, $fileCount, $fileUploaded));
+
+            if ($fileCount != 0) {
+                $user->notify(new ActivityLog($user->id, $fileCount, $fileUploaded, '1', '1'));
+            }
         }
         return Inertia::render('MainPages/AddSong');
     }

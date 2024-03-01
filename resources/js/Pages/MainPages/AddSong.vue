@@ -10,6 +10,7 @@ import { faFileArrowDown, faCircleArrowLeft } from '@fortawesome/free-solid-svg-
 import FilePreview from '@/components/FilePreview.vue';
 import useFileList from '@/compositions/list-file.js';
 import AudioComponent from '@/Components/AudioComponent.vue';
+import Swal from 'sweetalert2';
 
 defineOptions({
     layout: AudioComponent
@@ -20,15 +21,19 @@ const { files, addFiles } = useFileList()
 const form = useForm({
     files: ref(files),
 })
+let showIcon = ref(true);
+
 function onInputChange(e) {
     addFiles(e.target.files)
     e.target.value = null // reset so that selecting the same file again will still cause it to fire this change
     form.files = files
+    showIcon.value = false;
 }
 
 function dropFiles(e) {
     addFiles(e)
     form.files = files
+    showIcon.value = false
 }
 
 function removeFile(file) {
@@ -46,10 +51,28 @@ library.add(faFileArrowDown, faCircleArrowLeft);
 const uploadSong = function () {
     // if (form.files.value) {
     form.post('/songs/add', {
-        onBefore: () => alert('Songs uploaded successfully!'),
-        onSuccess: () => router.get('/songs/add')
+        onSuccess: (response) => {
+            // console.log(response);
+            if (response.props.error) {
+                // Display error message
+                Swal.fire({
+                    title: 'Error!',
+                    text: response.props.error,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            } else {
+                // Display success message
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Songs uploaded successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
+                router.get('/songs/add');
+            }
+        }
     })
-    // }
 }
 
 const back = function () {
@@ -72,6 +95,10 @@ const back = function () {
             <form @submit.prevent="uploadSong" enctype="multipart/form-data">
                 <DropZone class="drop-area" @files-dropped="dropFiles" #default="{ dropZoneActive }">
                     <div class="text-gray text-center z-2">
+                        <ul class="image-list" :ref="form.files" v-show="files.length">
+                            <FilePreview v-for="file, index of files" :index="index" :key="file.id" :file="file" tag="li"
+                                @remove="removeFile" />
+                        </ul>
                         <label for="file-input" class="btn text-sky-500 underline decoration-sky-500"
                             style="cursor:pointer">
                             <span v-if="dropZoneActive">
@@ -83,14 +110,11 @@ const back = function () {
                                 </div>
                             </span>
                             <span v-else>
-                                <div style="margin-bottom: 10px">
+                                <div style="margin-bottom: 10px" v-show="showIcon">
                                     <font-awesome-icon class="fa-2xl" icon="fa-solid fa-file-arrow-down" />
                                 </div>
                                 <div>
-                                    Drag file here to upload
-                                </div>
-                                <div>
-                                    or click here
+                                    Drag file here to upload or click here
                                 </div>
                             </span>
                         </label>
@@ -98,10 +122,6 @@ const back = function () {
                             @change="onInputChange">
 
                     </div>
-                    <ul class="image-list" :ref="form.files" v-show="files.length">
-                        <FilePreview v-for="file, index of files" :index="index" :key="file.id" :file="file" tag="li"
-                            @remove="removeFile" />
-                    </ul>
                 </DropZone>
                 <PrimaryButton class="float-end mt-5 mr-0" style="margin-right: 0px !important ;">Upload
                 </PrimaryButton>

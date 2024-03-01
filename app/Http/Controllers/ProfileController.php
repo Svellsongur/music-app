@@ -29,9 +29,9 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        if ($request->avatar != null){
-            $url = uploadfile('/storage/user/' . auth()->user()->id . '/library', $request->avatar);
-            $request->user()->avatar = $url;
+        if ($request->avatar != null) {
+            $url = uploadfile('/user/' . auth()->user()->id . '/library', $request->avatar);
+            $request->user()->avatar = 'http://music-app.test/storage/' . $url;
         }
 
         $request->user()->fill($request->validated());

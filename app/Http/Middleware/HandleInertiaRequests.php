@@ -33,7 +33,6 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $showDot = true;
         if ($request->user()) {
             $playlists = Playlist::where('user_id', $request->user()->id)->get();
 
@@ -53,7 +52,9 @@ class HandleInertiaRequests extends Middleware
             }
         }
         if ($request->user()) {
-            if (!$request->user()->unreadNotifications()) {
+            $showDot = true;
+
+            if ($request->user()->unreadNotifications->count() == 0) {
                 $showDot = false;
             }
 

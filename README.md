@@ -99,9 +99,6 @@ artist has song bug
 27/2/2024:
 * task left: 
 - css: optimize css
-- activity log function: log list
-- change the alert into new alert when optimize (make new alert cause today's alert bugged out)
-- what happened when upload a file twice (havent display actual bug to vue)
 - playlist function: add song to playlist and delete from playlist
 - sort, search & pagnition (27/2 new task)
 - pop out music panel (27/2 new task)

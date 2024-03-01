@@ -58,7 +58,7 @@ const deleteAll = function () {
 </script>
 
 <template>
-    <Head title="Music App" />
+    <Head title="Recycle Bin" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -132,4 +132,5 @@ const deleteAll = function () {
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout></template>
+    </AuthenticatedLayout>
+</template>

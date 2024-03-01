@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use stdClass;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Playlist;
 use Illuminate\Http\Request;
 use App\Models\ArtistHasSong;
+use App\Notifications\ActivityLog;
 use Illuminate\Support\Facades\DB;
-use stdClass;
 
 class PlaylistController extends Controller
 {
@@ -82,18 +84,23 @@ class PlaylistController extends Controller
 
     public function store(Request $request)
     {
-        $user_id = auth()->user()->id;
+        $user = User::where('id', auth()->user()->id)->first();
+        $fileName = [];
 
-        Playlist::create([
+        $playlist = Playlist::create([
             'name' => $request->name,
-            'user_id' => $user_id
+            'user_id' => $user->id
         ]);
 
-        $playlists = Playlist::where('user_id', $user_id)
+        $playlists = Playlist::where('user_id', $user->id)
             ->select('playlists.*')
             ->orderBy('playlists.name', 'asc')
             ->get();
-        // dd($songs);
+
+        array_push($fileName, $request->name);
+
+        $user->notify(new ActivityLog($user->id, '0', $fileName, '2', '1'));
+
         return Inertia::render('Dashboard', [
             'data' => [
                 'playlists' => $playlists
@@ -103,8 +110,8 @@ class PlaylistController extends Controller
         ]);
     }
 
-    public function addSong(Request $request, string $id){
-
+    public function addSong(Request $request, string $id)
+    {
     }
 
     public function update(Request $request)
@@ -113,7 +120,11 @@ class PlaylistController extends Controller
 
     public function destroy(Request $request, string $id)
     {
-        Playlist::where('id', $id)
-            ->forceDelete();
+        $user = User::where('id', auth()->user()->id)->first();
+        $playlist = Playlist::where('id', $id)->first();
+        $playlist->delete();
+        $fileName = [];
+        array_push($fileName, $playlist->name);
+        $user->notify(new ActivityLog($user->id, '0', $fileName, '2', '2'));
     }
 }

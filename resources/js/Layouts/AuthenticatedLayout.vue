@@ -10,12 +10,10 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMusic, faList, faRecordVinyl, faUser } from '@fortawesome/free-solid-svg-icons';
 import { usePage } from '@inertiajs/vue3';
+import { eventBus } from '@/eventBus.js';
 
 //import icon
-library.add(faMusic);
-library.add(faList);
-library.add(faRecordVinyl);
-library.add(faUser);
+library.add(faMusic, faList, faRecordVinyl, faUser);
 
 const showingNavigationDropdown = ref(false);
 
@@ -27,7 +25,10 @@ const showDot = ref(usePage().props.auth.showDot);
 
 Echo.channel('private-music-app-lavender' + usePage().props.auth.user.id).listen('.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', (data) => {
     showDot.value = true;
-    // console.log(data);
+})
+
+eventBus.on('markAllAsRead', () => {
+    showDot.value = false
 })
 
 </script>

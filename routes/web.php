@@ -70,6 +70,8 @@ Route::middleware('auth')->group(function () {
 
     //Activity Log
     Route::get('/activity-log', [ActivityController::class, 'index'])->name('activity-log');
+    Route::get('/activity-log/mark-all-as-read', [ActivityController::class, 'markAllAsRead'])->name('activity-log.mark-all-as-read');
+
 });
 
 Route::match(['get', 'post'], '/test', [SongController::class, 'check'])->name('test');

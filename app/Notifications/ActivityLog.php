@@ -17,17 +17,22 @@ class ActivityLog extends Notification implements ShouldQueue, ShouldBroadcast
     use Queueable, Dispatchable, InteractsWithSockets, SerializesModels;
     protected $user_id;
     protected $fileCount;
-    protected $fileUploaded;
+    protected $fileName;
+    protected $controllerType;
+    protected $notificationType;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($user_id, $fileCount, $fileUploaded)
+    public function __construct($user_id, $fileCount, $fileName,  $controllerType, $notificationType)
     {
-        //
+        //controllerType = 1 for song, 2 for playlist
+        //notificationType = 1 for upload, 2 for delete
         $this->user_id = $user_id;
         $this->fileCount = $fileCount;
-        $this->fileUploaded = $fileUploaded;
+        $this->fileName = $fileName;
+        $this->controllerType = $controllerType;
+        $this->notificationType = $notificationType;
     }
 
     /**
@@ -58,15 +63,52 @@ class ActivityLog extends Notification implements ShouldQueue, ShouldBroadcast
      */
     public function toArray(object $notifiable): array
     {
-        return [
-            //
-            'message' => 'You uploaded '.$this->fileCount.' files.',
-            'data' => $this->fileUploaded
-        ];
+        switch ($this->controllerType){
+            case '1':
+                switch ($this->notificationType){
+                    case '1':
+                        return [
+                            //
+                            'message' => 'You uploaded '.$this->fileCount.' files.',
+                            'data' => $this->fileName
+                        ];
+                        break;
+                    case '2':
+                        return [
+                            //
+                            'message' => 'You deleted '.$this->fileCount.' files.',
+                            'data' => $this->fileName
+                        ];
+                        break;
+                }
+            case '2':
+                switch ($this->notificationType){
+                    case '1':
+                        return [
+                            //
+                            'message' => 'You created a new playlist',
+                            'data' => $this->fileName
+                        ];
+                        break;
+                    case '2':
+                        return [
+                            //
+                            'message' => 'You deleted a playlist',
+                            'data' => $this->fileName
+                        ];
+                        break;
+                }
+        }
+
     }
 
     public function broadcastOn()
     {
         return new PrivateChannel('music-app-lavender'.$this->user_id);
     }
+
+    // broadcast as a custom event
+    // public function broadcastAs(){
+
+    // }
 }
