@@ -165,7 +165,9 @@ const stopTimeUpdate = function () {
 
 const seek = function () {
     audio.value.currentTime = progressBar.value.value;
-    play()
+    audio.value.oncanplaythrough = () => {
+        play();
+    }
 }
 
 const close = function () {
@@ -192,25 +194,23 @@ const shuffleMusic = function () {
     if (isShuffled.value == false) {
         isShuffled.value = true;
         songShuffled.value = false;
-        // console.log('isShuffled:' + isShuffled.value);
-        // console.log('songShuffled:' + songShuffled.value);
     } else {
         isShuffled.value = false;
         songShuffled.value = true;
-        // console.log('isShuffled:' + isShuffled.value);
-        // console.log('songShuffled:' + songShuffled.value);
     }
 }
 
 //loop
 const loopMusic = function () {
     if (isLooped.value == false) {
-        audio.value.setAttribute("loop", true);
         isLooped.value = true;
     } else {
-        audio.value.removeAttribute("loop");
         isLooped.value = false;
     }
+}
+
+const loop = function (){
+    play();
 }
 
 //eventBus
@@ -254,7 +254,7 @@ onMounted(() => {
                     <marquee id="songName" width="100%" scrollamount="1" direction="left">{{ currentPlaylist.length > 0 ?
                         currentPlaylist[songIndex].name : '' }}</marquee>
                     <audio :src="currentPlaylist.length > 0 ? currentPlaylist[songIndex].song_path : ''" ref="audio"
-                        @timeupdate="updateProgress(audio.currentTime)" @ended="next()" hidden></audio>
+                        @timeupdate="updateProgress(audio.currentTime)" @ended="isLooped == true ? loop() : next()" ></audio>
                 </div>
                 <div class="inline-block w-full flex items-center">
                     <div class="flex justify-between ml-10 items-center">
@@ -268,7 +268,7 @@ onMounted(() => {
                 <div class="inline-block" @mouseleave="volumeShow = false">
                     <font-awesome-icon :style="{ color: isShuffled ? 'red' : '' }" icon="fa-solid fa-shuffle"
                         class="cursor-pointer" @click="shuffleMusic()" />
-                    <font-awesome-icon icon="fa-solid fa-repeat" class="ml-5 cursor-pointer" @click="loopMusic()" />
+                    <font-awesome-icon icon="fa-solid fa-repeat" :style="{ color: isLooped ? 'red' : '' }" class="ml-5 cursor-pointer" @click="loopMusic()" />
                     <font-awesome-icon icon="fa-solid fa-backward-fast" class="ml-5 cursor-pointer" @click="prev()" />
                     <font-awesome-icon :icon="isPlaying ? 'fa-pause' : 'fa-play'" class="ml-5 cursor-pointer"
                         @click="isPlaying ? pause() : play()" />

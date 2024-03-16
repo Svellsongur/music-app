@@ -21,7 +21,7 @@ let totalSongs = props.data.totalSongs;
 let title = props.data.title;
 let type = props.data.layoutType;
 let showBackBtn = false;
-console.log(songs);
+// console.log(songs);
 if (type != 1) {
     showBackBtn = true;
 }
