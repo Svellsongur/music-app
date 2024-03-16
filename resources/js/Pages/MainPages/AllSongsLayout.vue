@@ -21,7 +21,7 @@ let totalSongs = props.data.totalSongs;
 let title = props.data.title;
 let type = props.data.layoutType;
 let showBackBtn = false;
-// console.log(songs.sort((a, b) => String(a.created_at).localeCompare(String(b.created_at))));
+console.log(songs);
 if (type != 1) {
     showBackBtn = true;
 }

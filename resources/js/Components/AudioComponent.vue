@@ -11,6 +11,7 @@ import "../../css/range.css";
 library.add(faPlay, faPause, faForwardFast, faBackwardFast, faVolumeUp, faVolumeMute, faRepeat, faShuffle);
 
 //local storage
+const songs = usePage().props.auth.allSongs;
 const default_artwork = 'http://music-app.test/storage/system/default_images/default_artwork(1).jpg';
 
 //audio functions
@@ -35,6 +36,7 @@ let display = ref(false);
 let isShuffled = ref(false);
 let songShuffled = ref(false);
 let isLooped = ref(false);
+
 
 //audio control functions
 const play = function () {
@@ -74,40 +76,36 @@ const prev = function () {
     audio.value.oncanplaythrough = () => {
         audio.value.play();
         progressBar.value.setAttribute("max", audio.value.duration);
-        isPlaying.value = true;
     }
     localStorage.setItem('index', songIndex.value);
+    isPlaying.value = true;
 }
 
 const next = function () {
     isPlaying.value = false;
     currentPlaylist.value = JSON.parse(localStorage.getItem('currentPlaylist'));
     let currentSong = currentPlaylist.value[songIndex.value];
-    if (isLooped.value == false) {
-        if (isShuffled.value == true && songShuffled.value == false) {
-            shuffle(currentPlaylist.value);
-            songShuffled.value = true;
-        }
-        if (isShuffled.value == false && songShuffled.value == true) {
-            currentPlaylist.value.sort();
-            songShuffled.value = false;
-        }
-        songIndex.value++;
-        if (songIndex.value >= currentPlaylist.value.length) {
-            songIndex.value = 0;
-        }
-        if (currentSong.id == currentPlaylist.value[songIndex.value].id) {
-            next();
-        }
-    } else {
-        audio.value.play();
+    if (isShuffled.value == true && songShuffled.value == false) {
+        shuffle(currentPlaylist.value);
+        songShuffled.value = true;
+    }
+    if (isShuffled.value == false && songShuffled.value == true) {
+        currentPlaylist.value.sort();
+        songShuffled.value = false;
+    }
+    songIndex.value++;
+    if (songIndex.value >= currentPlaylist.value.length) {
+        songIndex.value = 0;
+    }
+    if (currentSong.id == currentPlaylist.value[songIndex.value].id) {
+        next();
     }
     audio.value.oncanplaythrough = () => {
         audio.value.play();
         progressBar.value.setAttribute("max", audio.value.duration);
-        isPlaying.value = true;
     }
     localStorage.setItem('index', songIndex.value);
+    isPlaying.value = true;
 }
 
 const onPlay = function () {
@@ -155,7 +153,7 @@ const updateProgress = function (time) {
     currentTimeText.value.innerHTML = `${mins}:${secs}`;
 }
 
-const stopFunction = debounce(function () {
+const stopFunction = debounce(function() {
     disableTimeupdate = false;
 }, 500);
 
@@ -194,17 +192,23 @@ const shuffleMusic = function () {
     if (isShuffled.value == false) {
         isShuffled.value = true;
         songShuffled.value = false;
+        // console.log('isShuffled:' + isShuffled.value);
+        // console.log('songShuffled:' + songShuffled.value);
     } else {
         isShuffled.value = false;
         songShuffled.value = true;
+        // console.log('isShuffled:' + isShuffled.value);
+        // console.log('songShuffled:' + songShuffled.value);
     }
 }
 
 //loop
 const loopMusic = function () {
     if (isLooped.value == false) {
+        audio.value.setAttribute("loop", true);
         isLooped.value = true;
     } else {
+        audio.value.removeAttribute("loop");
         isLooped.value = false;
     }
 }
@@ -250,7 +254,7 @@ onMounted(() => {
                     <marquee id="songName" width="100%" scrollamount="1" direction="left">{{ currentPlaylist.length > 0 ?
                         currentPlaylist[songIndex].name : '' }}</marquee>
                     <audio :src="currentPlaylist.length > 0 ? currentPlaylist[songIndex].song_path : ''" ref="audio"
-                        @timeupdate="updateProgress(audio.currentTime)" @ended="next()"></audio>
+                        @timeupdate="updateProgress(audio.currentTime)" @ended="next()" hidden></audio>
                 </div>
                 <div class="inline-block w-full flex items-center">
                     <div class="flex justify-between ml-10 items-center">
@@ -264,8 +268,7 @@ onMounted(() => {
                 <div class="inline-block" @mouseleave="volumeShow = false">
                     <font-awesome-icon :style="{ color: isShuffled ? 'red' : '' }" icon="fa-solid fa-shuffle"
                         class="cursor-pointer" @click="shuffleMusic()" />
-                    <font-awesome-icon icon="fa-solid fa-repeat" :style="{ color: isLooped ? 'red' : '' }"
-                        class="ml-5 cursor-pointer" @click="loopMusic()" />
+                    <font-awesome-icon icon="fa-solid fa-repeat" class="ml-5 cursor-pointer" @click="loopMusic()" />
                     <font-awesome-icon icon="fa-solid fa-backward-fast" class="ml-5 cursor-pointer" @click="prev()" />
                     <font-awesome-icon :icon="isPlaying ? 'fa-pause' : 'fa-play'" class="ml-5 cursor-pointer"
                         @click="isPlaying ? pause() : play()" />
